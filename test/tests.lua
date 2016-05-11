@@ -972,10 +972,9 @@ TestBootstrap = {}
     end
 	
 	function TestBootstrap:testRequireVersionHead_CWD()
-
-		-- init
-		local dirMods = bootstrap.dirModules
 		
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "."
 		local dir = "Zefiros-Software/zpm/head"
 		
 		assert( os.mkdir( dir ) )
@@ -996,15 +995,17 @@ TestBootstrap = {}
 		
 		u.assertFalse( os.isdir( dir ) )
 	
+		bootstrap.dirModules = dirMods
     end
 	
 	function TestBootstrap:testRequireVersionHead_Multiple()
 
 		-- init
 		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "modules-test"
 		
-		local dir = "Zefiros-Software/zpm/head"
-		local dir2 = "Zefiros-Software/zpm2/head"
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/zpm/head"
+		local dir2 = bootstrap.dirModules .. "/Zefiros-Software/zpm2/head"
 		
 		assert( os.mkdir( dir ) )
 		u.assertTrue( os.isdir( dir ) )
@@ -1029,9 +1030,10 @@ TestBootstrap = {}
 		-- test
 		u.assertEquals( mo, "bar" )
 		
-		os.rmdir( dir )
+		os.rmdir( bootstrap.dirModules )
 		
-		u.assertFalse( os.isdir( dir ) )
+		u.assertFalse( os.isdir( bootstrap.dirModules ) )
+		bootstrap.dirModules = dirMods
 	
     end
 	
@@ -1039,9 +1041,10 @@ TestBootstrap = {}
 
 		-- init
 		local dirMods = bootstrap.dirModules
-		
-		local dir = "Zefiros-Software/zpm/head"
-		local dir2 = "Zefiros-Software/zpm2/head"
+		bootstrap.dirModules = "modules-test"
+			
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/zpm/head"
+		local dir2 = bootstrap.dirModules .. "/Zefiros-Software/zpm2/head"
 		
 		assert( os.mkdir( dir2 ) )
 		u.assertTrue( os.isdir( dir2 ) )
@@ -1066,9 +1069,10 @@ TestBootstrap = {}
 		-- test
 		u.assertEquals( mo, "bar" )
 		
-		os.rmdir( dir )
+		os.rmdir( bootstrap.dirModules )
 		
-		u.assertFalse( os.isdir( dir ) )
+		u.assertFalse( os.isdir( bootstrap.dirModules ) )
+		bootstrap.dirModules = dirMods
 	
     end
 	
