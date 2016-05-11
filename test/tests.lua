@@ -980,8 +980,7 @@ TestBootstrap = {}
 		
 		assert( os.mkdir( dir ) )
 		u.assertTrue( os.isdir( dir ) )
-		
-			
+					
 		file = io.open( dir .. "/zpm.lua", "w" )
 		file:write([[
 			return "bar"
@@ -989,6 +988,43 @@ TestBootstrap = {}
 		file:close()
 		
 		local mo = bootstrap.requireVersionHead( require, {"Zefiros-Software", "zpm"} )
+		
+		-- test
+		u.assertEquals( mo, "bar" )
+		
+		os.rmdir( dir )
+		
+		u.assertFalse( os.isdir( dir ) )
+	
+    end
+	
+	function TestBootstrap:testRequireVersionHead_Multiple()
+
+		-- init
+		local dirMods = bootstrap.dirModules
+		
+		local dir = "Zefiros-Software/zpm/head"
+		local dir2 = "Zefiros-Software/zpm2/head"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		
+		assert( os.mkdir( dir2 ) )
+		u.assertTrue( os.isdir( dir2 ) )
+					
+		file = io.open( dir .. "/zpm.lua", "w" )
+		file:write([[
+			return "bar"
+		]])
+		file:close()
+					
+		file2 = io.open( dir2 .. "/zpm2.lua", "w" )
+		file2:write([[
+			return "bar"
+		]])
+		file2:close()
+		
+		local mo = bootstrap.requireVersionHead( require, {"Zefiros-Software", "*"} )
 		
 		-- test
 		u.assertEquals( mo, "bar" )
