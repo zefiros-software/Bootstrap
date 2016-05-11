@@ -272,7 +272,7 @@ function bootstrap.requireVersionHead( base, modName )
         mod = base( heads[1] )
         
     else
-        error( heads )
+        error( string.format( "Module with vendor '%s' and name '%s' not found!", modName[1], modName[2] ) )
     end
     
     package.path = oldPath

@@ -971,6 +971,34 @@ TestBootstrap = {}
 	
     end
 	
+	function TestBootstrap:testRequireVersionHead_CWD()
+
+		-- init
+		local dirMods = bootstrap.dirModules
+		
+		local dir = "Zefiros-Software/zpm/head"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		
+			
+		file = io.open( dir .. "/zpm.lua", "w" )
+		file:write([[
+			return "bar"
+		]])
+		file:close()
+		
+		local mo = bootstrap.requireVersionHead( require, {"Zefiros-Software", "zpm"} )
+		
+		-- test
+		u.assertEquals( mo, "bar" )
+		
+		os.rmdir( dir )
+		
+		u.assertFalse( os.isdir( dir ) )
+	
+    end
+	
     function TestBootstrap:testRequireVersionHead_Remember()
 
 		-- init
@@ -983,11 +1011,8 @@ TestBootstrap = {}
 		u.assertTrue( os.isdir( dir ) )
 		u.assertFalse( os.isdir( dir .. "/zpm.lua" ) )
 		
-		local mo = bootstrap.requireVersionHead( require, {"Zefiros-Software", "zpm"} )
-		
-		-- test
-		u.assertEquals( mo, "bar" )
-		
+		u.assertErrorMsgContains( "Module with vendor 'Zefiros-Software' and name 'zpm' not found!", bootstrap.requireVersionHead, require, {"Zefiros-Software", "zpm"} )
+				
 		os.rmdir( bootstrap.dirModules )
 		
 		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
