@@ -26,10 +26,14 @@
 -- Bootstrap
 bootstrap = {}
 bootstrap._VERSION = "1.0.0-alpha"
+bootstrap.minReqVersion = ">5.0.0-alpha5"
 bootstrap._LOADED = {}
 
 -- Default the modules directory locally
 bootstrap.dirModules = path.join( _MAIN_SCRIPT_DIR, "modules" )
+
+-- Quit on wrong premake verions
+require("premake", bootstrap.minReqVersion)
 
 -- Libs
 bootstrap.semver = dofile( "semver.lua" )
@@ -178,9 +182,9 @@ function bootstrap.listModulesHead( vendor, mod )
 
     local result = {}
     local matches = os.matchdirs( path.join( bootstrap.dirModules, string.format( "%s/%s/head", vendor, mod ) ) )
-    
+
     for _, match in ipairs( matches ) do
-    
+
         local loader = match:gsub( "([%w-]+)/([%w-]+)/head", "%1/%2/head/%2.lua" )
         
         if not os.isfile( loader ) then
@@ -253,6 +257,17 @@ function bootstrap.requireVersionsOld( base, modName, versions )
     
 end
 
+
+-- [[
+-- Requires the head of an installed module. 
+-- This looks in the <vendor>/<module>/head/ folder
+--
+-- @param base     The base function we are overriding.
+-- @param modName  The module name we are including. 
+--
+-- @returns
+-- The loaded module object.
+-- ]]
 function bootstrap.requireVersionHead( base, modName )
 
     local oldPath = package.path
@@ -285,44 +300,29 @@ function bootstrap.requireVersionsNew( base, modName, versions )
     local oldPath = package.path
                 
     local tags = bootstrap.listModulesTags( modName[1], modName[2] )   
-    local mod = {}
+    local mod = nil
     
     if #tags > 0 then
     
         for _, tag in pairs( tags ) do
         
-            if versions == nil or premake.checkVersion( tag.version, versions ) then
+            if mod == nil and ( versions == nil or premake.checkVersion( tag.version, versions ) ) then
             
                 -- very lame workaround
                 package.path = tag.path .. ";" .. package.path
                 
-                mod =  base( tag.path )
+                mod = base( tag.path )
                 
             end
         end
     else
-    
-        local mods = bootstrap.requireVersionHead( base, modSplit )
+        print( string.format( "Module with vendor '%s' and name '%s' has no releases, switching to head!", modName[1], modName[2] ) )
+        local ok, mod = pcall( bootstrap.requireVersionHead, base, modSplit )
+        if not ok then
         
-        if #mods > 0 then
-            
-            package.path = mods[1] .. ";" .. package.path
-            mod = base( mods[1], versions )
-        
-        else
-    
-            if versions ~= nil then
-                
-                package.path = oldPath
-                error( string.format( "No module from vendor '%s' with the name '%s' found satisfies versions '%s'!\nAvailable are versions:\n", modName[1], modName[2], versions ) .. table.tostring( tags, true ) )
-            else        
-            
-                package.path = oldPath
-                error( string.format( "No module from vendor '%s' with the name '%s' found!", modName[1], modName[2] ) )
-            end
-            
             package.path = oldPath
-            error( string.format( "Run 'premake5 install-module='%s/%s'", modName[1], modName[2] ) )
+            error( string.format( "Module not found, run 'premake5 install-module='%s/%s'", modName[1], modName[2] ) )
+
         end
     end 
     

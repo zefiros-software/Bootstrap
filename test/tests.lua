@@ -1096,3 +1096,35 @@ TestBootstrap = {}
 		bootstrap.dirModules = dirMods
 	
     end
+	
+	
+	
+	function TestBootstrap:requireVersionsNew()
+
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "modules-test"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/zpm/head"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		
+			
+		file = io.open( dir .. "/zpm.lua", "w" )
+		file:write([[
+			return "bar"
+		]])
+		file:close()
+		
+		local mo = bootstrap.requireVersionHead( require, {"Zefiros-Software", "zpm"} )
+		
+		-- test
+		u.assertEquals( mo, "bar" )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+    end
