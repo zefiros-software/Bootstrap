@@ -132,17 +132,20 @@ function bootstrap.listModulesTags( vendor --[[ = "*" ]], mod --[[ = "*" ]] )
     
     for _, match in ipairs( matches ) do
     
-        local loader = match:gsub( "([%w-]+)/([%w-]+)/(%d+%.%d+%.%d+.*)", "%1/%2/%3/%2.lua" )
+        local loader = match:gsub( "([%w-]+)/([%w-]+)/(%d+%.%d+%.%d+.*)", "%1/%2/%3/%2" )
         
-        if not os.isfile( loader ) then
-            loader= match:gsub( "([%w-]+)/([%w-]+)/(%d+%.%d+%.%d+.*)", "%1/%2/%3/init.lua" )
+        print(match)
+        
+        if not os.isfile( loader .. ".lua" ) then
+            loader= match:gsub( "([%w-]+)/([%w-]+)/(%d+%.%d+%.%d+.*)", "%1/%2/%3/init" )
         end
        
-        if os.isfile( loader ) then
+        if os.isfile( loader .. ".lua" ) then
             
             table.insert( result, { 
                 version = match:match( ".*(%d+%.%d+%.%d+.*)" ),
-                path = path.getdirectory( loader )
+                path = path.getdirectory( loader ),
+                loader = loader
             } )
         end
         
@@ -185,14 +188,14 @@ function bootstrap.listModulesHead( vendor, mod )
 
     for _, match in ipairs( matches ) do
 
-        local loader = match:gsub( "([%w-]+)/([%w-]+)/head", "%1/%2/head/%2.lua" )
+        local loader = match:gsub( "([%w-]+)/([%w-]+)/head", "%1/%2/head/%2" )
         
-        if not os.isfile( loader ) then
-            loader = match:gsub( "([%w-]+)/([%w-]+)/head", "%1/%2/head/init.lua" )
+        if not os.isfile( loader .. ".lua" ) then
+            loader = match:gsub( "([%w-]+)/([%w-]+)/head", "%1/%2/head/init" )
         end
                 
-        if os.isfile( loader ) then
-            table.insert( result, path.getdirectory( loader ) )
+        if os.isfile( loader .. ".lua" ) then
+            table.insert( result, loader )
         end
         
     end
@@ -247,6 +250,9 @@ function bootstrap.requireVersionsOld( base, modName, versions )
     
     if not result then
     
+        -- restore in case
+        package.path = oldPath
+    
         error( mod )
         
     end
@@ -274,19 +280,32 @@ function bootstrap.requireVersionHead( base, modName )
     local mod = {}
     
     -- very lame workaround
-    local modPath = string.format( "%s/%s/head/%s.lua", modName[1], modName[2], modName[2] )
-    package.path =  modPath .. ";" .. 
-                    os.getcwd() .. "/" .. modPath .. ";" .. 
-                    bootstrap.dirModules .. "/" .. modPath .. ";" .. 
-                    package.path
+    local modPath = string.format( "/%s/%s/head/", modName[1], modName[2] )
 
+    package.path = os.getcwd() .. "/?.lua;" ..
+                   path.join( os.getcwd(), bootstrap.dirModules ) .. modPath .. "?.lua;" ..
+                   package.path
+                    
     local heads = bootstrap.listModulesHead( modName[1], modName[2] )
     
     if #heads > 0 then
         
-        mod = base( heads[1] )
+        local result, modf = pcall( base, heads[1] )
+        
+        if not result then
+        
+            -- restore in case
+            package.path = oldPath
+            
+            error( modf )
+            
+        else
+            mod = modf
+        end
         
     else
+    
+        package.path = oldPath
         error( string.format( "Module with vendor '%s' and name '%s' not found!", modName[1], modName[2] ) )
     end
     
@@ -302,16 +321,24 @@ function bootstrap.requireVersionsNew( base, modName, versions )
     local tags = bootstrap.listModulesTags( modName[1], modName[2] )   
     local mod = nil
     
+        print( table.tostring(tags, true), #tags )
+    
     if #tags > 0 then
     
         for _, tag in pairs( tags ) do
         
             if mod == nil and ( versions == nil or premake.checkVersion( tag.version, versions ) ) then
             
-                -- very lame workaround
-                package.path = tag.path .. ";" .. package.path
+                local modPath = string.format( "/%s/%s/%s/", modName[1], modName[2], tag.version )
                 
-                mod = base( tag.path )
+                -- very lame workaround
+                --package.path = tag.path .. ";" .. package.path
+                print(tag.path, os.getcwd(), modPath )
+                package.path = os.getcwd() .. "/?.lua;" ..
+                               path.join( os.getcwd(), bootstrap.dirModules ) .. modPath .. "?.lua;" ..
+                               package.path
+                
+                mod = base( tag.loader )
                 
             end
         end
