@@ -168,9 +168,9 @@ TestBootstrap = {}
 			"modules-test/Zefiros-Software/zpm/0.0.1", 
 			"modules-test/Zefiros-Software/zpm/3.0.0",
 			
-			"modules-test/Zefiros-Software/zpm2/1.0.0-beta", 
-			"modules-test/Zefiros-Software/zpm2/0.0.1", 
-			"modules-test/Zefiros-Software/zpm2/2.0.0",
+			"modules-test/Zefiros-Software/azpm2/1.0.0-beta", 
+			"modules-test/Zefiros-Software/azpm2/0.0.1", 
+			"modules-test/Zefiros-Software/azpm2/2.0.0",
 			
 			"modules-test/Zefiros-Softwarefe/df/1.5.4-ga", 
 			"modules-test/Zefiros-Softwarefe/df/0.3.1", 
@@ -179,6 +179,7 @@ TestBootstrap = {}
 		
 		for _, dir in ipairs( dirs ) do
 			
+			u.assertFalse( os.isdir( dir ) )
 			assert( os.mkdir( dir ) )
 			u.assertTrue( os.isdir( dir ) )
 			
@@ -207,18 +208,18 @@ TestBootstrap = {}
 				version = "0.3.1"
 			},
 			{
-				loader = "modules-test/Zefiros-Software/zpm2/2.0.0/init",
-				path = "modules-test/Zefiros-Software/zpm2/2.0.0",
+				loader = "modules-test/Zefiros-Software/azpm2/2.0.0/init",
+				path = "modules-test/Zefiros-Software/azpm2/2.0.0",
 				version = "2.0.0"
 			},
 			{
-				loader = "modules-test/Zefiros-Software/zpm2/1.0.0-beta/init",
-				path = "modules-test/Zefiros-Software/zpm2/1.0.0-beta", 
+				loader = "modules-test/Zefiros-Software/azpm2/1.0.0-beta/init",
+				path = "modules-test/Zefiros-Software/azpm2/1.0.0-beta", 
 				version = "1.0.0-beta"
 			},
 			{
-				loader = "modules-test/Zefiros-Software/zpm2/0.0.1/init",
-				path = "modules-test/Zefiros-Software/zpm2/0.0.1", 
+				loader = "modules-test/Zefiros-Software/azpm2/0.0.1/init",
+				path = "modules-test/Zefiros-Software/azpm2/0.0.1", 
 				version = "0.0.1"
 			},
 			{
@@ -268,6 +269,7 @@ TestBootstrap = {}
 		
 		for _, dir in ipairs( dirs ) do
 			
+			u.assertFalse( os.isdir( dir ) )
 			assert( os.mkdir( dir ) )
 			u.assertTrue( os.isdir( dir ) )
 			
@@ -356,7 +358,8 @@ TestBootstrap = {}
 		}
 		
 		for _, dir in ipairs( dirs ) do
-			
+						
+			u.assertFalse( os.isdir( dir ) )
 			assert( os.mkdir( dir ) )
 			u.assertTrue( os.isdir( dir ) )
 			
@@ -447,6 +450,7 @@ TestBootstrap = {}
 		
 		for i, dir in ipairs( dirs ) do
 			
+			u.assertFalse( os.isdir( dir ) )			
 			assert( os.mkdir( dir ) )
 			u.assertTrue( os.isdir( dir ) )
 			
@@ -538,7 +542,8 @@ TestBootstrap = {}
 		}
 		
 		for _, dir in ipairs( dirs ) do
-			
+						
+			u.assertFalse( os.isdir( dir ) )
 			assert( os.mkdir( dir ) )
 			u.assertTrue( os.isdir( dir ) )
 			
@@ -599,6 +604,7 @@ TestBootstrap = {}
 		
 		for _, dir in ipairs( dirs ) do
 			
+			u.assertFalse( os.isdir( dir ) )
 			assert( os.mkdir( dir ) )
 			u.assertTrue( os.isdir( dir ) )
 			
@@ -651,6 +657,7 @@ TestBootstrap = {}
 		
 		for _, dir in ipairs( dirs ) do
 			
+			u.assertFalse( os.isdir( dir ) )
 			assert( os.mkdir( dir ) )
 			u.assertTrue( os.isdir( dir ) )
 		end
@@ -680,6 +687,7 @@ TestBootstrap = {}
 		
 		for _, dir in ipairs( dirs ) do
 			
+			u.assertFalse( os.isdir( dir ) )
 			assert( os.mkdir( dir ) )
 			u.assertTrue( os.isdir( dir ) )
 			
@@ -717,6 +725,7 @@ TestBootstrap = {}
 		
 		for _, dir in ipairs( dirs ) do
 			
+			u.assertFalse( os.isdir( dir ) )
 			assert( os.mkdir( dir ) )
 			u.assertTrue( os.isdir( dir ) )
 			
@@ -755,6 +764,7 @@ TestBootstrap = {}
 		
 		for _, dir in ipairs( dirs ) do
 			
+			u.assertFalse( os.isdir( dir ) )
 			assert( os.mkdir( dir ) )
 			u.assertTrue( os.isdir( dir ) )
 			
@@ -792,6 +802,7 @@ TestBootstrap = {}
 		
 		for _, dir in ipairs( dirs ) do
 			
+			u.assertFalse( os.isdir( dir ) )
 			assert( os.mkdir( dir ) )
 			u.assertTrue( os.isdir( dir ) )
 			
@@ -854,13 +865,13 @@ TestBootstrap = {}
 		u.assertTrue( os.isdir( bootstrap.dirModules ) )
 		
 			
-		local file = io.open( bootstrap.dirModules .. "/foo.lua", "w" )
+		local file = io.open( bootstrap.dirModules .. "/testRequireOld.lua", "w" )
 		file:write([[
 			return "bar"
 		]])
 		file:close()
 		
-		local mo = bootstrap.requireVersionsOld( require, bootstrap.dirModules .. "/foo" )
+		local mo = bootstrap.requireVersionsOld( require, bootstrap.dirModules .. "/testRequireOld" )
 		
 		-- test
 		u.assertEquals( mo, "bar" )
@@ -884,9 +895,41 @@ TestBootstrap = {}
 			
 		assert( os.mkdir( bootstrap.dirModules ) )
 		u.assertTrue( os.isdir( bootstrap.dirModules ) )
-		u.assertFalse( os.isdir( bootstrap.dirModules .. "/foo.lua" ) )
+		u.assertFalse( os.isfile( bootstrap.dirModules .. "/testRequireOld.lua" ) )
 		
-		local mo = bootstrap.requireVersionsOld( require, bootstrap.dirModules .. "/foo" )
+		local mo = bootstrap.requireVersionsOld( require, bootstrap.dirModules .. "/testRequireOld" )
+		
+		-- test
+		u.assertEquals( mo, "bar" )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+	
+    end
+	
+    function TestBootstrap:testRequireOld_Remember2()
+
+		local oldPath = package.path
+
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+			
+		assert( os.mkdir( bootstrap.dirModules ) )
+		u.assertTrue( os.isdir( bootstrap.dirModules ) )
+					
+		local file = io.open( bootstrap.dirModules .. "/testRequireOld.lua", "w" )
+		file:write([[
+			return "barf"
+		]])
+		file:close()
+		
+		local mo = bootstrap.requireVersionsOld( require, bootstrap.dirModules .. "/testRequireOld" )
 		
 		-- test
 		u.assertEquals( mo, "bar" )
@@ -911,27 +954,27 @@ TestBootstrap = {}
 		assert( os.mkdir( bootstrap.dirModules ) )
 		u.assertTrue( os.isdir( bootstrap.dirModules ) )
 			
-		local file = io.open( bootstrap.dirModules .. "/foos.lua", "w" )
+		local file = io.open( bootstrap.dirModules .. "/testRequireOld_LuaRockStyle.lua", "w" )
 		file:write([[
-			return require( "foos.bar" )
+			return require( "testRequireOld_LuaRockStyle.bar" )
 		]])
 		file:close()
 		
 			
-		file2 = io.open( bootstrap.dirModules .. "/foos/bar.lua", "w" )
+		file2 = io.open( bootstrap.dirModules .. "/testRequireOld_LuaRockStyle/bar.lua", "w" )
 		file2:write([[
-			return require( "foos.bar2" )
+			return require( "testRequireOld_LuaRockStyle.bar2" )
 		]])
 		file2:close()
 		
 			
-		file3 = io.open( bootstrap.dirModules .. "/foos/bar2.lua", "w" )
+		file3 = io.open( bootstrap.dirModules .. "/testRequireOld_LuaRockStyle/bar2.lua", "w" )
 		file3:write([[
 			return "bar2"
 		]])
 		file3:close()
 		
-		local mo = bootstrap.requireVersionsOld( require, bootstrap.dirModules .. "/foos" )
+		local mo = bootstrap.requireVersionsOld( require, bootstrap.dirModules .. "/testRequireOld_LuaRockStyle" )
 		
 		-- test
 		u.assertEquals( mo, "bar2" )
@@ -952,7 +995,7 @@ TestBootstrap = {}
 		-- init
 		local dirMods = bootstrap.dirModules
 		bootstrap.dirModules = "./modules-test"
-		u.assertFalse( os.isdir( bootstrap.dirModules .. "/foo3.lua" ) )
+		u.assertFalse( os.isfile( bootstrap.dirModules .. "/foo3.lua" ) )
 			
 		assert( os.mkdir( bootstrap.dirModules ) )
 		u.assertTrue( os.isdir( bootstrap.dirModules ) )
@@ -1022,10 +1065,81 @@ TestBootstrap = {}
 		]])
 		file:close()
 		
-		local mo = bootstrap.requireVersionHead( require, {"Zefiros-Software", "zpm"} )
+		local mo, found = bootstrap.requireVersionHead( require, {"Zefiros-Software", "zpm"} )
 		
 		-- test
 		u.assertEquals( mo, "bar" )
+		u.assertTrue( found )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+    end	
+	
+    function TestBootstrap:testRequireVersionHead_Underscore()
+
+		local oldPath = package.path
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/zpm_/head"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		
+			
+		local file = io.open( dir .. "/zpm_.lua", "w" )
+		file:write([[
+			return "bar"
+		]])
+		file:close()
+		
+		local mo, found = bootstrap.requireVersionHead( require, {"Zefiros-Software", "zpm_"} )
+		
+		-- test
+		u.assertEquals( mo, "bar" )
+		u.assertTrue( found )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+    end
+	
+    function TestBootstrap:testRequireVersionHead_Dash()
+
+		local oldPath = package.path
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/zpm-/head"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		
+			
+		local file = io.open( dir .. "/zpm-.lua", "w" )
+		file:write([[
+			return "bar"
+		]])
+		file:close()
+		
+		local mo, found = bootstrap.requireVersionHead( require, {"Zefiros-Software", "zpm-"} )
+		
+		-- test
+		u.assertEquals( mo, "bar" )
+		u.assertTrue( found )
 		
 		os.rmdir( bootstrap.dirModules )
 		
@@ -1043,21 +1157,22 @@ TestBootstrap = {}
 		
 		local dirMods = bootstrap.dirModules
 		bootstrap.dirModules = "."
-		local dir = "Zefiros-Software/zpm/head"
+		local dir = "Zefiros-Software/testRequireVersionHead_CWD/head"
 		
 		assert( os.mkdir( dir ) )
 		u.assertTrue( os.isdir( dir ) )
 					
-		local file = io.open( dir .. "/zpm.lua", "w" )
+		local file = io.open( dir .. "/testRequireVersionHead_CWD.lua", "w" )
 		file:write([[
 			return "bar"
 		]])
 		file:close()
 		
-		local mo = bootstrap.requireVersionHead( require, {"Zefiros-Software", "zpm"} )
+		local mo, found = bootstrap.requireVersionHead( require, {"Zefiros-Software", "testRequireVersionHead_CWD"} )
 		
 		-- test
 		u.assertEquals( mo, "bar" )
+		u.assertTrue( found )
 		
 		os.rmdir( "Zefiros-Software" )
 		
@@ -1077,8 +1192,8 @@ TestBootstrap = {}
 		local dirMods = bootstrap.dirModules
 		bootstrap.dirModules = "./modules-test"
 		
-		local dir = bootstrap.dirModules .. "/Zefiros-Software/zpm/head"
-		local dir2 = bootstrap.dirModules .. "/Zefiros-Software/zpm2/head"
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionHead_Multiple/head"
+		local dir2 = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionHead_Multiple2/head"
 		
 		assert( os.mkdir( dir ) )
 		u.assertTrue( os.isdir( dir ) )
@@ -1086,22 +1201,23 @@ TestBootstrap = {}
 		assert( os.mkdir( dir2 ) )
 		u.assertTrue( os.isdir( dir2 ) )
 					
-		local file = io.open( dir .. "/zpm.lua", "w" )
+		local file = io.open( dir .. "/testRequireVersionHead_Multiple.lua", "w" )
 		file:write([[
 			return "bar"
 		]])
 		file:close()
 					
-		file2 = io.open( dir2 .. "/zpm2.lua", "w" )
+		file2 = io.open( dir2 .. "/testRequireVersionHead_Multiple2.lua", "w" )
 		file2:write([[
 			return "bar2"
 		]])
 		file2:close()
 		
-		local mo = bootstrap.requireVersionHead( require, {"Zefiros-Software", "*"} )
+		local mo, found = bootstrap.requireVersionHead( require, {"Zefiros-Software", "*"} )
 		
 		-- test
 		u.assertEquals( mo, "bar" )
+		u.assertTrue( found )
 		
 		os.rmdir( bootstrap.dirModules )
 		
@@ -1121,8 +1237,8 @@ TestBootstrap = {}
 		local dirMods = bootstrap.dirModules
 		bootstrap.dirModules = "./modules-test"
 			
-		local dir = bootstrap.dirModules .. "/Zefiros-Software/zpm/head"
-		local dir2 = bootstrap.dirModules .. "/Zefiros-Software/zpm2/head"
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionHead_Multiple3/head"
+		local dir2 = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionHead_Multiple4/head"
 		
 		assert( os.mkdir( dir2 ) )
 		u.assertTrue( os.isdir( dir2 ) )
@@ -1130,22 +1246,23 @@ TestBootstrap = {}
 		assert( os.mkdir( dir ) )
 		u.assertTrue( os.isdir( dir ) )
 					
-		file2 = io.open( dir2 .. "/zpm2.lua", "w" )
+		file2 = io.open( dir2 .. "/testRequireVersionHead_Multiple4.lua", "w" )
 		file2:write([[
 			return "bar2"
 		]])
 		file2:close()
 					
-		local file = io.open( dir .. "/zpm.lua", "w" )
+		local file = io.open( dir .. "/testRequireVersionHead_Multiple3.lua", "w" )
 		file:write([[
 			return "bar"
 		]])
 		file:close()
 		
-		local mo = bootstrap.requireVersionHead( require, {"Zefiros-Software", "*"} )
+		local mo, found = bootstrap.requireVersionHead( require, {"Zefiros-Software", "*"} )
 		
 		-- test
 		u.assertEquals( mo, "bar" )
+		u.assertTrue( found )
 		
 		os.rmdir( bootstrap.dirModules )
 		
@@ -1165,13 +1282,13 @@ TestBootstrap = {}
 		local dirMods = bootstrap.dirModules
 		bootstrap.dirModules = "./modules-test"
 		
-		local dir = bootstrap.dirModules .. "/Zefiros-Software/zpm/head"
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionHead_Remember/head"
 		
 		assert( os.mkdir( dir ) )
 		u.assertTrue( os.isdir( dir ) )
-		u.assertFalse( os.isdir( dir .. "/zpm.lua" ) )
+		u.assertFalse( os.isfile( dir .. "/zpm.lua" ) )
 		
-		u.assertErrorMsgContains( "Module with vendor 'Zefiros-Software' and name 'zpm' not found!", bootstrap.requireVersionHead, require, {"Zefiros-Software", "zpm"} )
+		u.assertErrorMsgContains( "Module with vendor 'Zefiros-Software' and name 'testRequireVersionHead_Remember' not found", bootstrap.requireVersionHead, require, {"Zefiros-Software", "testRequireVersionHead_Remember"} )
 				
 		os.rmdir( bootstrap.dirModules )
 		
@@ -1191,35 +1308,36 @@ TestBootstrap = {}
 		local dirMods = bootstrap.dirModules
 		bootstrap.dirModules = "./modules-test"
 		
-		local dir = bootstrap.dirModules .. "/Zefiros-Software/zpmlrs/head"
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionHead_LuaRockStyle/head"
 			
 		assert( os.mkdir( dir ) )
 		u.assertTrue( os.isdir( dir ) )
 			
-		local file = io.open( dir .. "/zpmlrs.lua", "w" )
+		local file = io.open( dir .. "/testRequireVersionHead_LuaRockStyle.lua", "w" )
 		file:write([[
-			return require( "zpmlrs.bar" )
+			return require( "testRequireVersionHead_LuaRockStyle.bar" )
 		]])
 		file:close()
 		
 			
-		file2 = io.open( dir .. "/zpmlrs/bar.lua", "w" )
+		file2 = io.open( dir .. "/testRequireVersionHead_LuaRockStyle/bar.lua", "w" )
 		file2:write([[
-			return require( "zpmlrs.bar2" )
+			return require( "testRequireVersionHead_LuaRockStyle.bar2" )
 		]])
 		file2:close()
 		
 			
-		file3 = io.open( dir .. "/zpmlrs/bar2.lua", "w" )
+		file3 = io.open( dir .. "/testRequireVersionHead_LuaRockStyle/bar2.lua", "w" )
 		file3:write([[
 			return "barsss2"
 		]])
 		file3:close()
 		
-		local mo = bootstrap.requireVersionHead( require, {"Zefiros-Software", "zpmlrs"} )
+		local mo, found = bootstrap.requireVersionHead( require, {"Zefiros-Software", "testRequireVersionHead_LuaRockStyle"} )
 		
 		-- test
 		u.assertEquals( mo, "barsss2" )
+		u.assertTrue( found )
 		
 		os.rmdir( bootstrap.dirModules )
 		
@@ -1239,35 +1357,36 @@ TestBootstrap = {}
 		local dirMods = bootstrap.dirModules
 		bootstrap.dirModules = path.join( os.getcwd(), "modules-test" )
 		
-		local dir = bootstrap.dirModules .. "/Zefiros-Software/zpmlrs/head"
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionHead_LuaRockStyle_Absolute/head"
 			
 		assert( os.mkdir( dir ) )
 		u.assertTrue( os.isdir( dir ) )
 			
-		local file = io.open( dir .. "/zpmlrs.lua", "w" )
+		local file = io.open( dir .. "/testRequireVersionHead_LuaRockStyle_Absolute.lua", "w" )
 		file:write([[
-			return require( "zpmlrs.bar" )
+			return require( "testRequireVersionHead_LuaRockStyle_Absolute.bar" )
 		]])
 		file:close()
 		
 			
-		file2 = io.open( dir .. "/zpmlrs/bar.lua", "w" )
+		file2 = io.open( dir .. "/testRequireVersionHead_LuaRockStyle_Absolute/bar.lua", "w" )
 		file2:write([[
-			return require( "zpmlrs.bar2" )
+			return require( "testRequireVersionHead_LuaRockStyle_Absolute.bar2" )
 		]])
 		file2:close()
 		
 			
-		file3 = io.open( dir .. "/zpmlrs/bar2.lua", "w" )
+		file3 = io.open( dir .. "/testRequireVersionHead_LuaRockStyle_Absolute/bar2.lua", "w" )
 		file3:write([[
 			return "barsss2"
 		]])
 		file3:close()
 		
-		local mo = bootstrap.requireVersionHead( require, {"Zefiros-Software", "zpmlrs"} )
+		local mo, found = bootstrap.requireVersionHead( require, {"Zefiros-Software", "testRequireVersionHead_LuaRockStyle_Absolute"} )
 		
 		-- test
 		u.assertEquals( mo, "barsss2" )
+		u.assertTrue( found )
 		
 		os.rmdir( bootstrap.dirModules )
 		
@@ -1288,13 +1407,13 @@ TestBootstrap = {}
 		local dirMods = bootstrap.dirModules
 		bootstrap.dirModules = "./modules-test"
 		
-		local dir = bootstrap.dirModules .. "/Zefiros-Software/zpmnofile/head"
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionHead_NoFile/head"
 		
 		assert( os.mkdir( dir ) )
 		u.assertTrue( os.isdir( dir ) )
-		u.assertFalse( os.isdir( dir .. "/zpmnofile.lua" ) )
+		u.assertFalse( os.isfile( dir .. "/testRequireVersionHead_NoFile.lua" ) )
 		
-		u.assertErrorMsgContains( "Module with vendor 'Zefiros-Software' and name 'zpmnofile' not found!", bootstrap.requireVersionHead, require, {"Zefiros-Software", "zpmnofile"} )
+		u.assertErrorMsgContains( "Module with vendor 'Zefiros-Software' and name 'testRequireVersionHead_NoFile' not found", bootstrap.requireVersionHead, require, {"Zefiros-Software", "testRequireVersionHead_NoFile"} )
 				
 		os.rmdir( bootstrap.dirModules )
 		
@@ -1315,19 +1434,19 @@ TestBootstrap = {}
 		local dirMods = bootstrap.dirModules
 		bootstrap.dirModules = "./modules-test"
 		
-		local dir = bootstrap.dirModules .. "/Zefiros_Software/zpmfail/head"
+		local dir = bootstrap.dirModules .. "/Zefiros_Software/testRequireVersionHead_Fail/head"
 		
 		assert( os.mkdir( dir ) )
 		u.assertTrue( os.isdir( dir ) )
 		
 			
-		local file = io.open( dir .. "/zpmfail.lua", "w" )
+		local file = io.open( dir .. "/testRequireVersionHead_Fail.lua", "w" )
 		file:write([[
 			return "bar
 		]])
 		file:close()
 		
-		u.assertErrorMsgContains( "unfinished string near '\"bar'", bootstrap.requireVersionHead, require, {"Zefiros_Software", "zpmfail"} )
+		u.assertErrorMsgContains( "unfinished string near '\"bar'", bootstrap.requireVersionHead, require, {"Zefiros_Software", "testRequireVersionHead_Fail"} )
 			
 		os.rmdir( bootstrap.dirModules )
 		
@@ -1376,6 +1495,76 @@ TestBootstrap = {}
 	
     end
 	
+	function TestBootstrap:testRequireVersionsNew_Underscore()
+
+		local oldPath = package.path
+
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-testf"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew_Underscore/0.0.1"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		
+			
+		local file = io.open( dir .. "/testRequireVersionsNew_Underscore.lua", "w" )
+		file:write([[
+			return "barrre"
+		]])
+		file:close()
+		
+		local mo = bootstrap.requireVersionsNew( require, {"Zefiros-Software", "testRequireVersionsNew_Underscore"} )
+		
+		-- test
+		u.assertEquals( mo, "barrre" )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+	
+    end
+	
+	function TestBootstrap:testRequireVersionsNew_Dash()
+
+		local oldPath = package.path
+
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-testf"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew-Dash/0.0.1"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		
+			
+		local file = io.open( dir .. "/testRequireVersionsNew-Dash.lua", "w" )
+		file:write([[
+			return "barrre"
+		]])
+		file:close()
+		
+		local mo = bootstrap.requireVersionsNew( require, {"Zefiros-Software", "testRequireVersionsNew-Dash"} )
+		
+		-- test
+		u.assertEquals( mo, "barrre" )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+	
+    end
+	
 	function TestBootstrap:testRequireVersionsNew_CWD()
 
 		local oldPath = package.path
@@ -1384,26 +1573,26 @@ TestBootstrap = {}
 		local dirMods = bootstrap.dirModules
 		bootstrap.dirModules = "./"
 		
-		local dir = "./Zefiros_Software/zpmncwd/0.0.1"
+		local dir = "./Zefiros_Software/testRequireVersionsNew_CWD/0.0.1"
 		
 		assert( os.mkdir( dir ) )
 		u.assertTrue( os.isdir( dir ) )
 		
 			
-		local file = io.open( dir .. "/zpmncwd.lua", "w" )
+		local file = io.open( dir .. "/testRequireVersionsNew_CWD.lua", "w" )
 		file:write([[
 			return "barrrf"
 		]])
 		file:close()
 		
-		local mo = bootstrap.requireVersionsNew( require, {"Zefiros_Software", "zpmncwd"} )
+		local mo = bootstrap.requireVersionsNew( require, {"Zefiros_Software", "testRequireVersionsNew_CWD"} )
 		
 		-- test
 		u.assertEquals( mo, "barrrf" )
 		
-		os.rmdir( "./Zefiros-Software" )
+		os.rmdir( "./Zefiros_Software" )		
 		
-		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		u.assertFalse( os.isdir( "./Zefiros_Software" ) ) 
 		bootstrap.dirModules = dirMods
 	
 		-- path correctly restored
@@ -1419,8 +1608,8 @@ TestBootstrap = {}
 		local dirMods = bootstrap.dirModules
 		bootstrap.dirModules = "./modules-test"
 		
-		local dir = bootstrap.dirModules .. "/Zefiros-Software/zpmn/0.0.1"
-		local dir2 = bootstrap.dirModules .. "/Zefiros-Software/zpm2/0.1.1-alpha"
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew_Multiple/0.0.1"
+		local dir2 = bootstrap.dirModules .. "/Zefiros-Software/atestRequireVersionsNew_Multiple/0.1.1-alpha"
 		
 		assert( os.mkdir( dir ) )
 		u.assertTrue( os.isdir( dir ) )
@@ -1428,22 +1617,22 @@ TestBootstrap = {}
 		assert( os.mkdir( dir2 ) )
 		u.assertTrue( os.isdir( dir2 ) )
 					
-		local file = io.open( dir .. "/zpm.lua", "w" )
+		local file = io.open( dir .. "/testRequireVersionsNew_Multiple.lua", "w" )
 		file:write([[
 			return "barrr"
 		]])
 		file:close()		
 			
-		local file2 = io.open( dir2 .. "/zpm2.lua", "w" )
-		file:write([[
+		local file2 = io.open( dir2 .. "/atestRequireVersionsNew_Multiple.lua", "w" )
+		file2:write([[
 			return "barrrf"
 		]])
-		file:close()
+		file2:close()
 		
 		local mo = bootstrap.requireVersionsNew( require, {"Zefiros-Software", "*"} )
 		
 		-- test
-		u.assertEquals( mo, "barrr" )
+		u.assertEquals( mo, "barrrf" )
 		
 		os.rmdir( bootstrap.dirModules )
 		
@@ -1463,8 +1652,8 @@ TestBootstrap = {}
 		local dirMods = bootstrap.dirModules
 		bootstrap.dirModules = "./modules-test"
 		
-		local dir = bootstrap.dirModules .. "/Zefiros-Software/ersionsNew_Multiple2/0.0.1"
-		local dir2 = bootstrap.dirModules .. "/Zefiros-Software/ersionsNew_Multiple2/0.1.1-alpha"
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/atestRequireVersionsNew_Multiple2/0.0.1"
+		local dir2 = bootstrap.dirModules .. "/Zefiros-Software/ztestRequireVersionsNew_Multiple2/0.1.1-alpha"
 		
 		assert( os.mkdir( dir ) )
 		u.assertTrue( os.isdir( dir ) )
@@ -1472,17 +1661,105 @@ TestBootstrap = {}
 		assert( os.mkdir( dir2 ) )
 		u.assertTrue( os.isdir( dir2 ) )		
 			
-		local file2 = io.open( dir2 .. "/ersionsNew_Multiple2.lua", "w" )
-		file:write([[
+		local file2 = io.open( dir2 .. "/ztestRequireVersionsNew_Multiple2.lua", "w" )
+		file2:write([[
 			return "barrrf"
 		]])
-		file:close()
+		file2:close()
 					
-		local file = io.open( dir .. "/ersionsNew_Multiple2.lua", "w" )
+		local file = io.open( dir .. "/atestRequireVersionsNew_Multiple2.lua", "w" )
 		file:write([[
 			return "barrr"
 		]])
 		file:close()
+		
+		local mo = bootstrap.requireVersionsNew( require, {"Zefiros-Software", "*"} )
+		
+		-- test
+		u.assertEquals( mo, "barrr" )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+	
+    end
+	
+	function TestBootstrap:testRequireVersionsNew_Multiple_Version()
+
+		local oldPath = package.path
+
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew_Multiple_Version/0.0.1"
+		local dir2 = bootstrap.dirModules .. "/Zefiros-Software/atestRequireVersionsNew_Multiple_Version/0.1.1-alpha"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		
+		assert( os.mkdir( dir2 ) )
+		u.assertTrue( os.isdir( dir2 ) )
+					
+		local file = io.open( dir .. "/testRequireVersionsNew_Multiple_Version.lua", "w" )
+		file:write([[
+			return "barrr"
+		]])
+		file:close()		
+			
+		local file2 = io.open( dir2 .. "/atestRequireVersionsNew_Multiple_Version.lua", "w" )
+		file2:write([[
+			return "barrrf"
+		]])
+		file2:close()
+		
+		local mo = bootstrap.requireVersionsNew( require, {"Zefiros-Software", "*"}, ">0.1.0" )
+		
+		-- test
+		u.assertEquals( mo, "barrrf" )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+	
+    end
+	
+	function TestBootstrap:testRequireVersionsNew_Multiple_Same()
+
+		local oldPath = package.path
+
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew_Multiple_Same/0.0.1"
+		local dir2 = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew_Multiple_Same/0.1.1-alpha"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		
+		assert( os.mkdir( dir2 ) )
+		u.assertTrue( os.isdir( dir2 ) )	
+					
+		local file = io.open( dir .. "/testRequireVersionsNew_Multiple_Same.lua", "w" )
+		file:write([[
+			return "barrr"
+		]])
+		file:close()	
+			
+		local file2 = io.open( dir2 .. "/testRequireVersionsNew_Multiple_Same.lua", "w" )
+		file2:write([[
+			return "barrrf"
+		]])
+		file2:close()
 		
 		local mo = bootstrap.requireVersionsNew( require, {"Zefiros-Software", "*"} )
 		
@@ -1497,4 +1774,583 @@ TestBootstrap = {}
 		-- path correctly restored
 		u.assertEquals( package.path, oldPath )
 	
+    end
+	
+	function TestBootstrap:testRequireVersionsNew_Multiple_Same2()
+
+		local oldPath = package.path
+
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew_Multiple_Same2/0.0.1"
+		local dir2 = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew_Multiple_Same2/0.1.1-alpha"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		
+		assert( os.mkdir( dir2 ) )
+		u.assertTrue( os.isdir( dir2 ) )	
+			
+		local file2 = io.open( dir2 .. "/testRequireVersionsNew_Multiple_Same2.lua", "w" )
+		file2:write([[
+			return "barrrrrrf"
+		]])
+		file2:close()
+					
+		local file = io.open( dir .. "/testRequireVersionsNew_Multiple_Same2.lua", "w" )
+		file:write([[
+			return "barrr"
+		]])
+		file:close()	
+		
+		local mo = bootstrap.requireVersionsNew( require, {"Zefiros-Software", "*"} )
+		
+		-- test
+		u.assertEquals( mo, "barrrrrrf" )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+	
+    end
+	
+	function TestBootstrap:testRequireVersionsNew_Multiple_Same_Version()
+
+		local oldPath = package.path
+
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew_Multiple_Same_Version/0.0.1"
+		local dir2 = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew_Multiple_Same_Version/0.1.1-alpha"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		
+		assert( os.mkdir( dir2 ) )
+		u.assertTrue( os.isdir( dir2 ) )	
+					
+		local file = io.open( dir .. "/testRequireVersionsNew_Multiple_Same_Version.lua", "w" )
+		file:write([[
+			return "barrr"
+		]])
+		file:close()	
+			
+		local file2 = io.open( dir2 .. "/testRequireVersionsNew_Multiple_Same_Version.lua", "w" )
+		file2:write([[
+			return "barrrf"
+		]])
+		file2:close()
+		
+		local mo = bootstrap.requireVersionsNew( require, {"Zefiros-Software", "*"}, "^0.1.0" )
+		
+		-- test
+		u.assertEquals( mo, "barrrf" )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+	
+    end
+	
+	function TestBootstrap:testRequireVersionsNew_Multiple_Same_Filter()
+
+		local oldPath = package.path
+
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/versionsNew_Multiple_Same_Filter/0.0.1"
+		local dir2 = bootstrap.dirModules .. "/Zefiros-Software/versionsNew_Multiple_Same_Filter/0.1.1-alpha"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		
+		assert( os.mkdir( dir2 ) )
+		u.assertTrue( os.isdir( dir2 ) )	
+					
+		local file = io.open( dir .. "/versionsNew_Multiple_Same_Filter.lua", "w" )
+		file:write([[
+			return "barrr"
+		]])
+		file:close()	
+			
+		local file2 = io.open( dir2 .. "/versionsNew_Multiple_Same_Filter.lua", "w" )
+		file2:write([[
+			return "barrrf"
+		]])
+		file2:close()
+		
+		local mo = bootstrap.requireVersionsNew( require, {"Zefiros-Software", "*"} )
+		
+		-- test
+		u.assertEquals( mo, "barrrf" )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+	
+    end
+	
+	function TestBootstrap:testRequireVersionsNew_Multiple_Filter_Same2()
+
+		local oldPath = package.path
+
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew_Multiple_Filter_Same2/0.0.1"
+		local dir2 = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew_Multiple_Filter_Same2/0.1.1-alpha"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		
+		assert( os.mkdir( dir2 ) )
+		u.assertTrue( os.isdir( dir2 ) )	
+			
+		local file2 = io.open( dir2 .. "/testRequireVersionsNew_Multiple_Filter_Same2.lua", "w" )
+		file2:write([[
+			return "barrrf"
+		]])
+		file2:close()
+					
+		local file = io.open( dir .. "/testRequireVersionsNew_Multiple_Filter_Same2.lua", "w" )
+		file:write([[
+			return "barrr"
+		]])
+		file:close()	
+		
+		local mo = bootstrap.requireVersionsNew( require, {"Zefiros-Software", "testRequireVersionsNew_Multiple_Filter_Same2"} )
+		
+		-- test
+		u.assertEquals( mo, "barrrf" )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+	
+    end
+	
+	function TestBootstrap:testRequireVersionsNew_Multiple_Same_Filter_Version()
+
+		local oldPath = package.path
+
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew_Multiple_Same_Filter_Version/0.0.1"
+		local dir2 = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew_Multiple_Same_Filter_Version/1.1.1-alpha"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		
+		assert( os.mkdir( dir2 ) )
+		u.assertTrue( os.isdir( dir2 ) )	
+					
+		local file = io.open( dir .. "/testRequireVersionsNew_Multiple_Same_Filter_Version.lua", "w" )
+		file:write([[
+			return "barrrf"
+		]])
+		file:close()	
+			
+		local file2 = io.open( dir2 .. "/testRequireVersionsNew_Multiple_Same_Filter_Version.lua", "w" )
+		file2:write([[
+			return "barrr"
+		]])
+		file2:close()
+		
+		local mo = bootstrap.requireVersionsNew( require, {"Zefiros-Software", "*"}, ">0.1" )
+		
+		-- test
+		u.assertEquals( mo, "barrr" )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+	
+    end
+	
+	function TestBootstrap:testRequireVersionsNew_NoValidVersion()
+
+		local oldPath = package.path
+
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew_NoValidVersion/0.0.1"
+		local dir2 = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew_NoValidVersion/1.1.1-alpha"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		
+		assert( os.mkdir( dir2 ) )
+		u.assertTrue( os.isdir( dir2 ) )	
+					
+		local file = io.open( dir .. "/testRequireVersionsNew_NoValidVersion.lua", "w" )
+		file:write([[
+			return "barrrf"
+		]])
+		file:close()	
+			
+		local file2 = io.open( dir2 .. "/testRequireVersionsNew_NoValidVersion.lua", "w" )
+		file2:write([[
+			return "barrr"
+		]])
+		file2:close()
+		
+		u.assertErrorMsgContains( "Module with vendor 'Zefiros-Software' and name '*' has no releases satisfying version '>2'!", bootstrap.requireVersionsNew, require, {"Zefiros-Software", "*"}, ">2" )
+		
+		
+        os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+	
+    end
+	
+	function TestBootstrap:testRequireVersionsNew_Remember()
+
+		local oldPath = package.path
+
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew/0.0.1"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		u.assertFalse( os.isfile( dir .. "/testRequireVersionsNew.lua" ) )
+		
+		u.assertErrorMsgContains( "Module with vendor 'Zefiros-Software' and name 'testRequireVersionsNew' not found", bootstrap.requireVersionsNew, require, {"Zefiros-Software", "testRequireVersionsNew"} )
+				
+        os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+	
+    end
+	
+	function TestBootstrap:testRequireVersionsNew_Remember2()
+
+		local oldPath = package.path
+
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew/0.0.1"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+			
+		local file = io.open( dir .. "/testRequireVersionsNew.lua", "w" )
+		file:write([[
+			return "fee"
+		]])
+		file:close()
+		
+		local mod = bootstrap.requireVersionsNew( require, {"Zefiros-Software", "testRequireVersionsNew"} )
+				
+		-- test
+		u.assertEquals( mo, nil )
+		
+        os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+	
+    end
+			
+    function TestBootstrap:testRequireVersionsNew_LuaRockStyle()
+
+		local oldPath = package.path
+		
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew_LuaRockStyle/0.0.5"
+			
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+			
+		local file = io.open( dir .. "/testRequireVersionsNew_LuaRockStyle.lua", "w" )
+		file:write([[
+			return require( "testRequireVersionsNew_LuaRockStyle.bar" )
+		]])
+		file:close()
+		
+			
+		file2 = io.open( dir .. "/testRequireVersionsNew_LuaRockStyle/bar.lua", "w" )
+		file2:write([[
+			return require( "testRequireVersionsNew_LuaRockStyle.bar2" )
+		]])
+		file2:close()
+		
+			
+		file3 = io.open( dir .. "/testRequireVersionsNew_LuaRockStyle/bar2.lua", "w" )
+		file3:write([[
+			return "barsss2"
+		]])
+		file3:close()
+		
+		local mo = bootstrap.requireVersionsNew( require, {"Zefiros-Software", "testRequireVersionsNew_LuaRockStyle"} )
+		
+		-- test
+		u.assertEquals( mo, "barsss2" )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+	
+    end
+			
+    function TestBootstrap:testRequireVersionsNew_LuaRockStyle_Absolute()
+
+		local oldPath = package.path
+		
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = path.join( os.getcwd(), "modules-test" )
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew_LuaRockStyle/0.0.5"
+			
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+			
+		local file = io.open( dir .. "/testRequireVersionsNew_LuaRockStyle.lua", "w" )
+		file:write([[
+			return require( "testRequireVersionsNew_LuaRockStyle.bar" )
+		]])
+		file:close()
+		
+			
+		file2 = io.open( dir .. "/testRequireVersionsNew_LuaRockStyle/bar.lua", "w" )
+		file2:write([[
+			return require( "testRequireVersionsNew_LuaRockStyle.bar2" )
+		]])
+		file2:close()
+		
+			
+		file3 = io.open( dir .. "/testRequireVersionsNew_LuaRockStyle/bar2.lua", "w" )
+		file3:write([[
+			return "barsss2"
+		]])
+		file3:close()
+		
+		local mo = bootstrap.requireVersionsNew( require, {"Zefiros-Software", "testRequireVersionsNew_LuaRockStyle"} )
+		
+		-- test
+		u.assertEquals( mo, "barsss2" )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+	
+    end
+	
+	
+    function TestBootstrap:testRequireVersionsNew_Head()
+
+		local oldPath = package.path
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew_Head/head"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		
+			
+		local file = io.open( dir .. "/testRequireVersionsNew_Head.lua", "w" )
+		file:write([[
+			return "baree"
+		]])
+		file:close()
+		
+		local mo = bootstrap.requireVersionsNew( require, {"Zefiros-Software", "testRequireVersionsNew_Head"} )
+		
+		-- test
+		u.assertEquals( mo, "baree" )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+    end	
+	
+	
+    function TestBootstrap:testRequireVersionsNew_NoFile()
+
+		local oldPath = package.path
+		
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew_NoFile/0.2.0"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		u.assertFalse( os.isfile( dir .. "/testRequireVersionsNew_NoFile.lua" ) )
+		u.assertFalse( os.isfile( dir .. "../head/testRequireVersionsNew_NoFile.lua" ) )
+		
+		u.assertErrorMsgContains( "Module with vendor 'Zefiros-Software' and name 'testRequireVersionHead_NoFile' not found", bootstrap.requireVersionHead, require, {"Zefiros-Software", "testRequireVersionHead_NoFile"} )
+				
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+	
+    end	
+	
+	function TestBootstrap:testRequireVersionsNew_Fail()
+
+		local oldPath = package.path
+
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew_Fail/0.0.1"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		
+			
+		local file = io.open( dir .. "/testRequireVersionsNew_Fail.lua", "w" )
+		file:write([[
+			return "bar
+		]])
+		file:close()
+		
+		u.assertErrorMsgContains( "unfinished string near '\"bar'", bootstrap.requireVersionsNew, require, {"Zefiros-Software", "testRequireVersionsNew_Fail"} )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+	
+    end
+	
+	function TestBootstrap:testRequireVersionsNew_Fail_Head()
+
+		local oldPath = package.path
+
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersionsNew_Fail_Head/head"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		
+			
+		local file = io.open( dir .. "/testRequireVersionsNew_Fail_Head.lua", "w" )
+		file:write([[
+			return "bar
+		]])
+		file:close()
+		
+		u.assertErrorMsgContains( "unfinished string near '\"bar'", bootstrap.requireVersionsNew, require, {"Zefiros-Software", "testRequireVersionsNew_Fail_Head"} )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+	
+    end
+	
+	
+	
+	
+    function TestBootstrap:testRequireOld()
+
+		local oldPath = package.path
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+			
+		assert( os.mkdir( bootstrap.dirModules ) )
+		u.assertTrue( os.isdir( bootstrap.dirModules ) )
+		
+			
+		local file = io.open( bootstrap.dirModules .. "/testRequireOld.lua", "w" )
+		file:write([[
+			return "bar"
+		]])
+		file:close()
+		
+		local mo = bootstrap.requireVersionsOld( require, bootstrap.dirModules .. "/testRequireOld" )
+		
+		-- test
+		u.assertEquals( mo, "bar" )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
     end

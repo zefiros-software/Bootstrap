@@ -131,17 +131,15 @@ function bootstrap.listModulesTags( vendor --[[ = "*" ]], mod --[[ = "*" ]] )
     local matches = os.matchdirs( path.join( bootstrap.dirModules, string.format( "%s/%s/*", vendor, mod )  ) )
     
     for _, match in ipairs( matches ) do
-    
-        local loader = match:gsub( "([%w-]+)/([%w-]+)/(%d+%.%d+%.%d+.*)", "%1/%2/%3/%2" )
         
-        print(match)
-        
+        local loader = match:gsub( "([%w-_]+)/([%w-_]+)/(%d+%.%d+%.%d+.*)", "%1/%2/%3/%2" )
+                
         if not os.isfile( loader .. ".lua" ) then
-            loader= match:gsub( "([%w-]+)/([%w-]+)/(%d+%.%d+%.%d+.*)", "%1/%2/%3/init" )
+            loader= match:gsub( "([%w-_]+)/([%w-_]+)/(%d+%.%d+%.%d+.*)", "%1/%2/%3/init" )
         end
        
         if os.isfile( loader .. ".lua" ) then
-            
+        
             table.insert( result, { 
                 version = match:match( ".*(%d+%.%d+%.%d+.*)" ),
                 path = path.getdirectory( loader ),
@@ -156,7 +154,7 @@ function bootstrap.listModulesTags( vendor --[[ = "*" ]], mod --[[ = "*" ]] )
         local p1 = t1.path:match( "(.*)/%d+%.%d+%.%d+.*" )
         local p2 = t2.path:match( "(.*)/%d+%.%d+%.%d+.*" )
         if p1 ~= p2 then
-            return p1 > p2
+            return p1 < p2
         end
         
         return bootstrap.semver( t1.version ) > bootstrap.semver( t2.version )
@@ -187,11 +185,11 @@ function bootstrap.listModulesHead( vendor, mod )
     local matches = os.matchdirs( path.join( bootstrap.dirModules, string.format( "%s/%s/head", vendor, mod ) ) )
 
     for _, match in ipairs( matches ) do
-
-        local loader = match:gsub( "([%w-]+)/([%w-]+)/head", "%1/%2/head/%2" )
+    
+        local loader = match:gsub( "([%w-_]+)/([%w-_]+)/head", "%1/%2/head/%2" )
         
         if not os.isfile( loader .. ".lua" ) then
-            loader = match:gsub( "([%w-]+)/([%w-]+)/head", "%1/%2/head/init" )
+            loader = match:gsub( "([%w-_]+)/([%w-_]+)/head", "%1/%2/head/init" )
         end
                 
         if os.isfile( loader .. ".lua" ) then
@@ -287,9 +285,9 @@ function bootstrap.requireVersionHead( base, modName )
                    package.path
                     
     local heads = bootstrap.listModulesHead( modName[1], modName[2] )
+    local found = #heads > 0
+    if found then
     
-    if #heads > 0 then
-        
         local result, modf = pcall( base, heads[1] )
         
         if not result then
@@ -306,50 +304,91 @@ function bootstrap.requireVersionHead( base, modName )
     else
     
         package.path = oldPath
-        error( string.format( "Module with vendor '%s' and name '%s' not found!", modName[1], modName[2] ) )
+        error( string.format( "Module with vendor '%s' and name '%s' not found,\nplease run 'premake5 install-module='%s/%s'!", modName[1], modName[2], modName[1], modName[2] ) )
+        
     end
     
     package.path = oldPath
     
-    return mod
+    return mod, found
 end
 
-function bootstrap.requireVersionsNew( base, modName, versions )
+-- [[
+-- Requires the version of an installed module.
+-- This looks in the <vendor>/<module>/<version>/ folders first,
+-- when no releases are found this looks in the <vendor>/<module>/head/ folder
+--
+-- @param base         The base function we are overriding.
+-- @param modName      The module name we are including. 
+-- @param versionsStr  The version string the release should satisfy. 
+--
+-- @returns
+-- The loaded module object.
+-- ]]
+function bootstrap.requireVersionsNew( base, modName, versionsStr )
 
     local oldPath = package.path
                 
     local tags = bootstrap.listModulesTags( modName[1], modName[2] )   
     local mod = nil
-    
-        print( table.tostring(tags, true), #tags )
-    
+        
     if #tags > 0 then
     
+        local loaded = false
         for _, tag in pairs( tags ) do
-        
-            if mod == nil and ( versions == nil or premake.checkVersion( tag.version, versions ) ) then
+
+            if mod == nil and ( versionsStr == nil or premake.checkVersion( tag.version, versionsStr ) ) then
             
                 local modPath = string.format( "/%s/%s/%s/", modName[1], modName[2], tag.version )
                 
                 -- very lame workaround
-                --package.path = tag.path .. ";" .. package.path
-                print(tag.path, os.getcwd(), modPath )
                 package.path = os.getcwd() .. "/?.lua;" ..
                                path.join( os.getcwd(), bootstrap.dirModules ) .. modPath .. "?.lua;" ..
-                               package.path
+                               package.path        
+             
+                local result, modf = pcall( base, tag.loader )
                 
-                mod = base( tag.loader )
+                if not result then
                 
+                    -- restore in case
+                    package.path = oldPath
+                    
+                    error( modf )
+                    
+                else
+                    mod = modf
+                end
+                
+                loaded = true
+            end            
+            
+            if not loaded then
+                package.path = oldPath
+                error( string.format( "Module with vendor '%s' and name '%s' has no releases satisfying version '%s'!", modName[1], modName[2], versionsStr ) )
             end
+            
         end
     else
-        print( string.format( "Module with vendor '%s' and name '%s' has no releases, switching to head!", modName[1], modName[2] ) )
-        local ok, mod = pcall( bootstrap.requireVersionHead, base, modSplit )
-        if not ok then
+        
+        if not _ACTION == "test" then
+            print( string.format( "Module with vendor '%s' and name '%s' has no releases, switching to head!", modName[1], modName[2] ) )
+        end
+        
+        local ok, modf, found = pcall( bootstrap.requireVersionHead, base, modName )
+
+        if not ok and found then
+            
+            package.path = oldPath
+            error( string.format( "Module with vendor '%s' and name '%s' failed to load!\n%s", modName[1], modName[2], modf ) )
+        
+        elseif not ok and not found then
         
             package.path = oldPath
-            error( string.format( "Module not found, run 'premake5 install-module='%s/%s'", modName[1], modName[2] ) )
-
+            error( modf )
+ 
+        else
+        
+            mod = modf
         end
     end 
     
@@ -359,7 +398,8 @@ function bootstrap.requireVersionsNew( base, modName, versions )
 end
 
 function bootstrap.requireVersions( base, modName, versions )
-        
+       
+    --[[
     local modSplit = bootstrap.getModule( modName )
     if #modSplit > 1 and not ( os.isdir( modName ) or os.isfile( modName ) or os.isfile( modName .. ".lua" ) ) then
 
@@ -378,6 +418,7 @@ function bootstrap.requireVersions( base, modName, versions )
         return bootstrap.requireVersionsOld( base, modName, versions )      
           
     end
+    --]]
 end
 
 function bootstrap.require(  base, modName, versions )
