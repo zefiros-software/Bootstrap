@@ -2324,7 +2324,7 @@ TestBootstrap = {}
 	
 	
 	
-    function TestBootstrap:testRequireOld()
+    function TestBootstrap:testRequireVersions()
 
 		local oldPath = package.path
 		-- init
@@ -2341,7 +2341,7 @@ TestBootstrap = {}
 		]])
 		file:close()
 		
-		local mo = bootstrap.requireVersionsOld( require, bootstrap.dirModules .. "/testRequireOld" )
+		local mo = bootstrap.requireVersions( require, bootstrap.dirModules .. "/testRequireOld" )
 		
 		-- test
 		u.assertEquals( mo, "bar" )
@@ -2354,3 +2354,208 @@ TestBootstrap = {}
 		-- path correctly restored
 		u.assertEquals( package.path, oldPath )
     end
+	
+	function TestBootstrap:testRequireVersions_Head()
+
+		local oldPath = package.path
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersions_Head/head"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		
+			
+		local file = io.open( dir .. "/testRequireVersions_Head.lua", "w" )
+		file:write([[
+			return "bar"
+		]])
+		file:close()
+		
+		local mo, found = bootstrap.requireVersions( require, "Zefiros-Software/testRequireVersions_Head", "@head" )
+		
+		-- test
+		u.assertEquals( mo, "bar" )
+		u.assertTrue( found )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+    end	
+	
+	function TestBootstrap:testRequireVersions_Head_Fallback()
+
+		local oldPath = package.path
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersions_Head/head"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		
+			
+		local file = io.open( dir .. "/testRequireVersions_Head.lua", "w" )
+		file:write([[
+			return "bar"
+		]])
+		file:close()
+		
+		local mo = bootstrap.requireVersions( require, "Zefiros-Software/testRequireVersions_Head" )
+		
+		-- test
+		u.assertEquals( mo, "bar" )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+    end
+	
+	function TestBootstrap:testRequireVersions_Version()
+
+		local oldPath = package.path
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersions_Head/0.2.3"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		
+			
+		local file = io.open( dir .. "/testRequireVersions_Head.lua", "w" )
+		file:write([[
+			return "bar"
+		]])
+		file:close()
+		
+		local mo = bootstrap.requireVersions( require, "Zefiros-Software/testRequireVersions_Head" )
+		
+		-- test
+		u.assertEquals( mo, "bar" )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+    end	
+	
+	function TestBootstrap:testRequireVersions_Version()
+
+		local oldPath = package.path
+		-- init
+		local dirMods = bootstrap.dirModules
+		bootstrap.dirModules = "./modules-test"
+		
+		local dir = bootstrap.dirModules .. "/Zefiros-Software/testRequireVersions_Head/0.2.3"
+		
+		assert( os.mkdir( dir ) )
+		u.assertTrue( os.isdir( dir ) )
+		
+			
+		local file = io.open( dir .. "/testRequireVersions_Head.lua", "w" )
+		file:write([[
+			return "bar"
+		]])
+		file:close()
+		
+		local mo = bootstrap.requireVersions( require, "Zefiros-Software/testRequireVersions_Head" )
+		
+		-- test
+		u.assertEquals( mo, "bar" )
+		
+		os.rmdir( bootstrap.dirModules )
+		
+		u.assertFalse( os.isdir( bootstrap.dirModules ) ) 
+		bootstrap.dirModules = dirMods
+	
+	
+		-- path correctly restored
+		u.assertEquals( package.path, oldPath )
+    end	
+	
+	function TestBootstrap:testRequire()
+
+		local requireVersions = bootstrap.requireVersions
+		local its = 0
+		bootstrap.requireVersions = function()
+			its = its + 1
+			return "brrrr"
+		end
+		
+		local mod = bootstrap.require( nil, "testRequire", nil )
+		
+		u.assertEquals( mod, "brrrr" )	
+		u.assertEquals( its, 1 )	
+		
+		bootstrap.requireVersions = requireVersions
+    end	
+	
+	function TestBootstrap:testRequire_Memoisation()
+
+		local requireVersions = bootstrap.requireVersions
+		local its = 0
+		bootstrap.requireVersions = function()
+			its = its + 1
+			return "brrrr"
+		end
+		
+		local mod = bootstrap.require( nil, "testRequire_Memoisation", nil )
+		
+		u.assertEquals( mod, "brrrr" )	
+		u.assertEquals( its, 1 )	
+		
+		mod = bootstrap.require( nil, "testRequire_Memoisation", nil )
+		u.assertEquals( mod, "brrrr" )	
+		u.assertEquals( its, 1 )
+		
+		bootstrap.requireVersions = requireVersions
+    end	
+	
+	function TestBootstrap:testRequire_onLoad()
+
+		local requireVersions = bootstrap.requireVersions
+		local its = 0
+		local loaded = 0
+		bootstrap.requireVersions = function()
+			its = its + 1
+			local ret = {}
+			function ret:onLoad()
+				loaded = loaded + 1
+			end
+			ret.value = "brrrr"
+			
+			return ret
+		end
+		
+		local mod = bootstrap.require( nil, "testRequire_onLoad", nil )
+		
+		u.assertEquals( mod.value, "brrrr" )	
+		u.assertEquals( its, 1 )	
+		u.assertEquals( loaded, 1 )
+		
+		mod = bootstrap.require( nil, "testRequire_onLoad", nil )
+		u.assertEquals( mod.value, "brrrr" )	
+		u.assertEquals( its, 1 )
+		u.assertEquals( loaded, 1 )
+		
+		bootstrap.requireVersions = requireVersions
+    end	

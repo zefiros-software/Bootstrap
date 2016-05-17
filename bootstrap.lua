@@ -398,27 +398,33 @@ function bootstrap.requireVersionsNew( base, modName, versionsStr )
 end
 
 function bootstrap.requireVersions( base, modName, versions )
-       
-    --[[
-    local modSplit = bootstrap.getModule( modName )
-    if #modSplit > 1 and not ( os.isdir( modName ) or os.isfile( modName ) or os.isfile( modName .. ".lua" ) ) then
 
-        if versions == "@head" then
-        
-            return bootstrap.requireVersionHead( base, modSplit )        
-        
-        else
-        
-            return bootstrap.requireVersionsNew( base, modSplit, versions )  
-            
-        end
-    
-    else    
-    
-        return bootstrap.requireVersionsOld( base, modName, versions )      
-          
+    if versions == "@head" then
+        local modSplit = bootstrap.getModule( modName )
+        return bootstrap.requireVersionHead( base, modSplit )   
     end
-    --]]
+    
+    local mod = nil
+    local result, modf = pcall( bootstrap.requireVersionsOld, base, modName, versions )  
+    
+    if not result then
+        
+        local modSplit = bootstrap.getModule( modName )
+        local resultn, modfn = pcall( bootstrap.requireVersionsNew, base, modSplit, versions )  
+        
+        if not resultn then
+            
+            error( modfn )
+            
+        else
+            mod = modfn
+        end
+        
+    else
+        mod = modf
+    end
+    
+    return mod
 end
 
 function bootstrap.require(  base, modName, versions )
