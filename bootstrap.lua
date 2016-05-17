@@ -452,6 +452,8 @@ end
 
 if _ACTION ~= "test" then
 
+    print( string.format( "Loading The Zefiros Bootstrap version '%s'...", bootstrap._VERSION ) )
+
     premake.override( _G, "require", bootstrap.require )
 
     premake.override( premake, "checkVersion", bootstrap.checkVersion )
