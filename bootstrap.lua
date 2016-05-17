@@ -443,7 +443,7 @@ function bootstrap.require(  base, modName, versions )
             mod.onLoad()
         end
         
-        mod.__isLoaded = false
+        mod.__isLoaded = true
     end    
         
     return mod
