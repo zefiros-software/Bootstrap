@@ -4,8 +4,7 @@ import platform
 from shutil import move
 import os
 
-gh = github3.login(token="6b3b4ef8d2746bf694214dd20ac0f6dbad684afb")
-repo = gh.repository( "premake", "premake-core")
+repo = github3.repository( "premake", "premake-core")
 
 ignoreReleases = [ "Premake 5.0 alpha 4", "Premake 5.0 alpha 5" ]
 
