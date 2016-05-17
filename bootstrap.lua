@@ -439,11 +439,11 @@ function bootstrap.require(  base, modName, versions )
     
     if type(mod) == "table" and mod.onLoad ~= nil then
     
-        if mod.isLoaded == nil then
+        if mod.__isLoaded == nil then
             mod.onLoad()
         end
         
-        mod.isLoaded = false
+        mod.__isLoaded = false
     end    
         
     return mod
