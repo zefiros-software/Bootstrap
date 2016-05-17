@@ -54,7 +54,7 @@ end
 -- ]]
 function bootstrap.onLoad()
     
-    if not _ACTION == "test" then
+    if _ACTION ~= "test" then
         print( "Loading zpm bootstrap..." )       
     end
 
@@ -73,7 +73,7 @@ function bootstrap.init( directory )
     
     if not os.isdir( directory ) then    
 
-        if not _ACTION == "test" then
+        if _ACTION ~= "test" then
             print( "Creating modules directory..." )            
         end
     
@@ -370,7 +370,7 @@ function bootstrap.requireVersionsNew( base, modName, versionsStr )
         end
     else
         
-        if not _ACTION == "test" then
+        if _ACTION ~= "test" then
             print( string.format( "Module with vendor '%s' and name '%s' has no releases, switching to head!", modName[1], modName[2] ) )
         end
         
@@ -450,7 +450,9 @@ function bootstrap.require(  base, modName, versions )
 
 end
 
-if not _ACTION == "test" then
+if _ACTION ~= "test" then
+
+    print( string.format( "Loading The Zefiros Bootstrap version '%s'...", bootstrap._VERSION ) )
 
     premake.override( _G, "require", bootstrap.require )
 
