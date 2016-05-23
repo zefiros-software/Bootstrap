@@ -380,7 +380,7 @@ function bootstrap.requireVersionsNew( base, modName, versionsStr )
         elseif not ok and not found then
         
             package.path = oldPath
-            error( modf )
+            error( modf .. "\n" )
  
         else
         
@@ -410,7 +410,7 @@ function bootstrap.requireVersions( base, modName, versions )
 
         if not resultn then
             
-            error( modfn )
+            error( modfn .. "\n" )
             
         else
             mod = modfn
@@ -448,7 +448,7 @@ function bootstrap.requireVersionsFromDirectories( base, modName, versions )
     -- reset current path
     bootstrap._dirModules = nil
     
-    error( err )
+    error( err .. "\n" )
 end
 
 function bootstrap.require(  base, modName, versions )
