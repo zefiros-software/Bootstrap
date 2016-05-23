@@ -322,7 +322,7 @@ end
 -- The loaded module object.
 -- ]]
 function bootstrap.requireVersionsNew( base, modName, versionsStr )
-
+    
     local oldPath = package.path
                 
     local tags = bootstrap.listModulesTags( modName[1], modName[2] )   
@@ -366,9 +366,9 @@ function bootstrap.requireVersionsNew( base, modName, versionsStr )
         end
     else
         
-        if _ACTION ~= "test" then
-            print( string.format( "Module with vendor '%s' and name '%s' has no releases, switching to head!", modName[1], modName[2] ) )
-        end
+        --if _ACTION ~= "test" then
+            --print( string.format( "Module with vendor '%s' and name '%s' has no releases, switching to head!", modName[1], modName[2] ) )
+        --end
         
         local ok, modf, found = pcall( bootstrap.requireVersionHead, base, modName )
 
