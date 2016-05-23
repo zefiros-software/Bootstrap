@@ -29,8 +29,10 @@ bootstrap._VERSION = "1.0.0-alpha"
 bootstrap.minReqVersion = ">5.0.0-alpha5"
 bootstrap._LOADED = {}
 
--- Default the modules directory locally
-bootstrap.dirModules = path.join( _MAIN_SCRIPT_DIR, "modules" )
+bootstrap.directories = { path.join( _MAIN_SCRIPT_DIR, "modules" ), path.join( _PREMAKE_DIR, "modules" ) }
+
+-- Where do we currently look for modules
+bootstrap._dirModules = nil
 
 -- Quit on wrong premake verions
 require("premake", bootstrap.minReqVersion)
@@ -38,19 +40,11 @@ require("premake", bootstrap.minReqVersion)
 -- Libs
 bootstrap.semver = dofile( "semver.lua" )
 
--- The modules folder is not there switch to installed folder
--- This functionality cannot be unit tested
-if not os.isdir( bootstrap.dirModules ) then
-
-    bootstrap.dirModules = path.join( _PREMAKE_DIR, "modules" )
-    
-end
-
 --[[
 -- The module loader, this should not be executed when running tests.
 -- 
 -- @post
--- * os.isdir( bootstrap.dirModules ) == true
+-- * os.isdir( bootstrap._dirModules ) == true
 -- ]]
 function bootstrap.onLoad()
     
@@ -58,7 +52,7 @@ function bootstrap.onLoad()
         print( string.format( "Loading The Zefiros Bootstrap version '%s'...", bootstrap._VERSION ) )     
     end
 
-    bootstrap.init( bootstrap.dirModules )
+    bootstrap.init( bootstrap._dirModules )
     
 end
 
@@ -128,7 +122,7 @@ function bootstrap.listModulesTags( vendor --[[ = "*" ]], mod --[[ = "*" ]] )
     mod = mod or "*"
 
     local result = {}
-    local matches = os.matchdirs( path.join( bootstrap.dirModules, string.format( "%s/%s/*", vendor, mod )  ) )
+    local matches = os.matchdirs( path.join( bootstrap._dirModules, string.format( "%s/%s/*", vendor, mod )  ) )
     
     for _, match in ipairs( matches ) do
         
@@ -182,7 +176,7 @@ function bootstrap.listModulesHead( vendor, mod )
     mod = mod or "*"
 
     local result = {}
-    local matches = os.matchdirs( path.join( bootstrap.dirModules, string.format( "%s/%s/head", vendor, mod ) ) )
+    local matches = os.matchdirs( path.join( bootstrap._dirModules, string.format( "%s/%s/head", vendor, mod ) ) )
 
     for _, match in ipairs( matches ) do
     
@@ -281,7 +275,7 @@ function bootstrap.requireVersionHead( base, modName )
     local modPath = string.format( "/%s/%s/head/", modName[1], modName[2] )
 
     package.path = os.getcwd() .. "/?.lua;" ..
-                   path.join( os.getcwd(), bootstrap.dirModules ) .. modPath .. "?.lua;" ..
+                   path.join( os.getcwd(), bootstrap._dirModules ) .. modPath .. "?.lua;" ..
                    package.path
                     
     local heads = bootstrap.listModulesHead( modName[1], modName[2] )
@@ -336,14 +330,14 @@ function bootstrap.requireVersionsNew( base, modName, versionsStr )
     
         local loaded = false
         for _, tag in pairs( tags ) do
-
+        
             if mod == nil and ( versionsStr == nil or premake.checkVersion( tag.version, versionsStr ) ) then
             
                 local modPath = string.format( "/%s/%s/%s/", modName[1], modName[2], tag.version )
                 
                 -- very lame workaround
                 package.path = os.getcwd() .. "/?.lua;" ..
-                               path.join( os.getcwd(), bootstrap.dirModules ) .. modPath .. "?.lua;" ..
+                               path.join( os.getcwd(), bootstrap._dirModules ) .. modPath .. "?.lua;" ..
                                package.path        
              
                 local result, modf = pcall( base, tag.loader )
@@ -406,12 +400,12 @@ function bootstrap.requireVersions( base, modName, versions )
     
     local mod = nil
     local result, modf = pcall( bootstrap.requireVersionsOld, base, modName, versions )  
-    
+
     if not result then
         
         local modSplit = bootstrap.getModule( modName )
         local resultn, modfn = pcall( bootstrap.requireVersionsNew, base, modSplit, versions )  
-        
+
         if not resultn then
             
             error( modfn )
@@ -427,13 +421,41 @@ function bootstrap.requireVersions( base, modName, versions )
     return mod
 end
 
+function bootstrap.requireVersionsFromDirectories( base, modName, versions )
+   
+    local err = ""
+
+    for _, dir in pairs( bootstrap.directories ) do
+    
+        bootstrap._dirModules = dir
+        
+        local ok, modfn = pcall( bootstrap.requireVersions, base, modName, versions )  
+        
+        if ok then
+            
+            -- reset current path
+            bootstrap._dirModules = nil
+            
+            return modfn
+            
+        else
+            err = modfn
+        end
+    end
+    
+    -- reset current path
+    bootstrap._dirModules = nil
+    
+    error( err )
+end
+
 function bootstrap.require(  base, modName, versions )
     
     if bootstrap._LOADED[ modName ] ~= nil then
         return bootstrap._LOADED[ modName ]
     end
 
-    local mod = bootstrap.requireVersions( base, modName, versions )
+    local mod = bootstrap.requireVersionsFromDirectories( base, modName, versions )
     
     bootstrap._LOADED[ modName ] = mod
     
