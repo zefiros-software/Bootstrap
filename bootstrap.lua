@@ -300,7 +300,7 @@ function bootstrap.requireVersionHead( base, modName )
     else
     
         package.path = oldPath
-        error( string.format( "Module with vendor '%s' and name '%s' not found,\nplease run 'premake5 install-module='%s/%s'!", modName[1], modName[2], modName[1], modName[2] ) )
+        error( string.format( "Module with vendor '%s' and name '%s' not found,\nplease run 'premake5 install-module %s/%s!", modName[1], modName[2], modName[1], modName[2] ) )
         
     end
     
@@ -402,15 +402,15 @@ function bootstrap.requireVersions( base, modName, versions )
     
     local mod = nil
     local result, modf = pcall( bootstrap.requireVersionsOld, base, modName, versions )  
-
+    
     if not result then
         
         local modSplit = bootstrap.getModule( modName )
         local resultn, modfn = pcall( bootstrap.requireVersionsNew, base, modSplit, versions )  
 
         if not resultn then
-            
-            error( modfn .. "\n" )
+        
+            error( modf .. "\n" .. modfn .. "\n" )
             
         else
             mod = modfn
