@@ -29,7 +29,9 @@ bootstrap._VERSION = "1.0.0-beta"
 bootstrap.minReqVersion = ">5.0.0-alpha5"
 bootstrap._LOADED = {}
 
-bootstrap.directories = { path.join( _MAIN_SCRIPT_DIR, "modules" ), path.join( _PREMAKE_DIR, "modules" ) }
+    
+bootstrap.globalDirectory = path.join( _PREMAKE_DIR, "modules" )
+bootstrap.directories = { path.join( _MAIN_SCRIPT_DIR, "modules" ), bootstrap.globalDirectory }
 
 -- Where do we currently look for modules
 bootstrap._dirModules = nil
@@ -52,7 +54,7 @@ function bootstrap.onLoad()
         print( string.format( "Loading The Zefiros Bootstrap version '%s'...", bootstrap._VERSION ) )     
     end
 
-    bootstrap.init( bootstrap._dirModules )
+    bootstrap.init( bootstrap.globalDirectory )
     
 end
 
@@ -64,7 +66,7 @@ end
 -- * os.isdir( directory ) == true
 -- ]]
 function bootstrap.init( directory )
-    
+
     if not os.isdir( directory ) then    
 
         if _ACTION ~= "test" then

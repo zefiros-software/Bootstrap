@@ -76,7 +76,7 @@ TestBootstrap = {}
 		
 		bootstrap.onLoad()
 		
-	 	u.assertEquals( dir, bootstrap._dirModules )
+	 	u.assertEquals( dir, bootstrap.globalDirectory )
 		
 		bootstrap.init = i
 		
