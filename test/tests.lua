@@ -2630,17 +2630,17 @@ TestBootstrap = {}
 			
 			if its == 1 then
 				u.assertEquals( bootstrap._dirModules, "a" )
-				error( "next" )
+				error( "next1" )
 			
 				return "fault"
 			elseif its == 2 then
 				u.assertEquals( bootstrap._dirModules, "b" )
-				error( "next" )
+				error( "next2" )
 			
 				return "fault"
 			elseif its == 3 then
 				u.assertEquals( bootstrap._dirModules, "c" )	
-				error( "next" )
+				error( "next3" )
 				
 				return "fault"
 			end
@@ -2648,7 +2648,7 @@ TestBootstrap = {}
 			return "brrrr"
 		end
 		
-		u.assertErrorMsgContains( "next", bootstrap.requireVersionsFromDirectories, nil, "testzRequireVersionsFromDirectories_3", nil )
+		u.assertErrorMsgContains( "next3", bootstrap.requireVersionsFromDirectories, nil, "testzRequireVersionsFromDirectories_3", nil )
 
 		u.assertEquals( its, 3 )	
 		

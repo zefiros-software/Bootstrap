@@ -441,8 +441,9 @@ function bootstrap.requireVersionsFromDirectories( base, modName, versions )
             return modfn
             
         else
-            if err == "" or err:gsub( "loop or previous error loading module", "" ) ~= err then
-                err = modfn
+            if err == "" or ( err:gsub( "loop or previous error loading module", "" ) == err and 
+                              err:gsub("^%w", ""):gsub( modfn:gsub("^%w", ""), "" ) == err) then
+                err = err .. "\n\n" .. modfn
             end
         end
     end
@@ -450,7 +451,6 @@ function bootstrap.requireVersionsFromDirectories( base, modName, versions )
     -- reset current path
     bootstrap._dirModules = nil
     
-    print( err )
     error( err )
 end
 
