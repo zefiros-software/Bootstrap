@@ -442,7 +442,7 @@ function bootstrap.requireVersionsFromDirectories( base, modName, versions )
             
         else
             if err == "" or ( err:gsub( "loop or previous error loading module", "" ) == err and 
-                              err:gsub("^%w", ""):gsub( modfn:gsub("^%w", ""), "" ) == err) then
+                              err:gsub("%W", ""):gsub( modfn:gsub("%W", ""), "" ) == err:gsub("%W", "")) then
                 err = err .. "\n\n" .. modfn
             end
         end
