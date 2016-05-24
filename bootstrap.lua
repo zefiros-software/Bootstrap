@@ -25,7 +25,7 @@
 
 -- Bootstrap
 bootstrap = {}
-bootstrap._VERSION = "1.0.0-beta"
+bootstrap._VERSION = "1.0.1-beta"
 bootstrap.minReqVersion = ">5.0.0-alpha5"
 bootstrap._LOADED = {}
 
@@ -380,7 +380,7 @@ function bootstrap.requireVersionsNew( base, modName, versionsStr )
         elseif not ok and not found then
         
             package.path = oldPath
-            error( modf .. "\n" )
+            error( modf )
  
         else
         
@@ -410,7 +410,7 @@ function bootstrap.requireVersions( base, modName, versions )
 
         if not resultn then
         
-            error( modf .. "\n" .. modfn .. "\n" )
+            error( modf .. "\n" .. modfn )
             
         else
             mod = modfn
@@ -441,14 +441,17 @@ function bootstrap.requireVersionsFromDirectories( base, modName, versions )
             return modfn
             
         else
-            err = modfn
+            if err == "" or err:gsub( "loop or previous error loading module", "" ) ~= err then
+                err = modfn
+            end
         end
     end
     
     -- reset current path
     bootstrap._dirModules = nil
     
-    error( err .. "\n" )
+    print( err )
+    error( err )
 end
 
 function bootstrap.require(  base, modName, versions )
