@@ -863,6 +863,14 @@ TestBootstrap = {}
 	
     end
 	
+    function TestBootstrap:testCheckVersion_Head()
+
+		u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "@head", "@head" ) )
+		u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "@head", "<=0.0.0  ||>1.0.0  ||@head" ) )
+		u.assertFalse( bootstrap.checkVersion( premake.checkVersion, "@head", "<=0.0.0  ||>1.0.0  ||   >0.5.0" ) )
+	
+    end
+	
     function TestBootstrap:testRequireOld()
 
 		local oldPath = package.path

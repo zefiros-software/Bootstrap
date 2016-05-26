@@ -179,9 +179,9 @@ function bootstrap.listModulesHead( vendor, mod )
 
     local result = {}
     local matches = os.matchdirs( path.join( bootstrap._dirModules, string.format( "%s/%s/head", vendor, mod ) ) )
-
-    for _, match in ipairs( matches ) do
     
+    for _, match in ipairs( matches ) do
+
         local loader = match:gsub( "([%w-_]+)/([%w-_]+)/head", "%1/%2/head/%2" )
         
         if not os.isfile( loader .. ".lua" ) then
@@ -202,7 +202,7 @@ end
 -- precedance over other operators.
 --
 -- @param base     The base function to check versions with.
--- @param version  The version string to check with.
+-- @param version  The version string to check with may be '@head'.
 -- @param versions The versions string to check against.
 --
 -- @returns
@@ -212,8 +212,10 @@ function bootstrap.checkVersion( base, version, versions )
 
     for _, v in ipairs( string.explode( versions, "||" ) ) do
     
+        local trimmed = v:gsub("^%s*(.-)%s*$", "%1")
+        
         -- trim version sstring
-        if base( version, v:gsub("^%s*(.-)%s*$", "%1") ) then
+        if trimmed == version or ( version ~= "@head" and base( version, trimmed )) then
             return true
         end
     
@@ -426,7 +428,7 @@ end
 function bootstrap.requireVersionsFromDirectories( base, modName, versions )
    
     local err = ""
-
+    
     for _, dir in pairs( bootstrap.directories ) do
     
         bootstrap._dirModules = dir
