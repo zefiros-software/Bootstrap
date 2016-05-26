@@ -215,7 +215,7 @@ function bootstrap.checkVersion( base, version, versions )
         local trimmed = v:gsub("^%s*(.-)%s*$", "%1")
         
         -- trim version sstring
-        if trimmed == version or ( version ~= "@head" and base( version, trimmed )) then
+        if trimmed == version or ( version ~= "@head" and trimmed ~= "@head" and base( version, trimmed )) then
             return true
         end
     
