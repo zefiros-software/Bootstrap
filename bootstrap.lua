@@ -25,7 +25,7 @@
 
 -- Bootstrap
 bootstrap = {}
-bootstrap._VERSION = "1.0.1-beta"
+bootstrap._VERSION = "1.0.4"
 bootstrap.minReqVersion = ">5.0.0-alpha5"
 bootstrap._LOADED = {}
 
