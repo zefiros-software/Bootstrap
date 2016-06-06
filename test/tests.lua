@@ -849,6 +849,13 @@ TestBootstrap = {}
 	
     end
 	
+    function TestBootstrap:testCheckVersion_Fix()
+		
+		u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "0.5", "<=0.0.0 || >0.4.0" ) )
+		u.assertFalse( bootstrap.checkVersion( premake.checkVersion, "0.5", "<=0.0.0 || >0.5.0" ) )
+	
+    end
+	
     function TestBootstrap:testCheckVersion_Trim()
 
 		u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "0.5.0", "<=0.0.0  ||   >0.4.0" ) )
@@ -869,6 +876,15 @@ TestBootstrap = {}
 		u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "@head", "<=0.0.0  ||>1.0.0  ||@head" ) )
 		u.assertFalse( bootstrap.checkVersion( premake.checkVersion, "0.2.0", "<=0.0.0  ||>1.0.0  ||@head" ) )
 		u.assertFalse( bootstrap.checkVersion( premake.checkVersion, "@head", "<=0.0.0  ||>1.0.0  ||   >0.5.0" ) )
+	
+    end
+	
+    function TestBootstrap:testFixVersion_Basic()
+	
+		u.assertEquals( bootstrap.fixVersion( "0.5" ), "0.5.0" )	
+		u.assertEquals( bootstrap.fixVersion( "5" ), "5.0.0" )	
+		u.assertEquals( bootstrap.fixVersion( "0.5.1" ), "0.5.1" )
+		u.assertEquals( bootstrap.fixVersion( "0.5.1.2" ), "0.5.1.2" )
 	
     end
 	

@@ -90,6 +90,7 @@ end
 -- ]]
 function bootstrap.getModule( modName )
 
+    assert( modName ~= nil, "Given module may not be nil!" )
     assert( modName:len() > 0, "Given module may not be empty ''!" )
 
     local mod = modName:explode( "/" )
@@ -210,9 +211,11 @@ end
 -- ]]
 function bootstrap.checkVersion( base, version, versions )
 
+    version = bootstrap.fixVersion( version )
+    
     for _, v in ipairs( string.explode( versions, "||" ) ) do
     
-        local trimmed = v:gsub("^%s*(.-)%s*$", "%1")
+        local trimmed = bootstrap.fixVersion( v:gsub("^%s*(.-)%s*$", "%1") )
         
         -- trim version sstring
         if trimmed == version or ( version ~= "@head" and trimmed ~= "@head" and base( version, trimmed )) then
@@ -223,6 +226,26 @@ function bootstrap.checkVersion( base, version, versions )
 
     return false
     
+end
+
+function bootstrap.fixVersion( version )
+    
+    if version:gsub( "[%.%d]", "" ) == "" then
+
+        local _, count = string.gsub( version, "%.", "" )
+        
+        if count == 0 then
+        
+            return string.format( "%s.0.0", version ) 
+        
+        elseif count == 1 then
+        
+            return string.format( "%s.0", version ) 
+            
+        end
+    end 
+    
+    return version
 end
 
 -- [[
