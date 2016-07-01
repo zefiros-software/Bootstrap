@@ -27,7 +27,7 @@ for release in reversed(list(repo.releases())):
             tar.extractall( "bin" )
             tar.close()
 
-            move("bin/premake5.exe", "bin/" + asset.name.replace(".zip", ".exe") )
+            move("bin/premake5", "bin/" + asset.name.replace(".zip", "") )
             
         elif platform.system() == "Windows" and "windows" in asset.name:
         
@@ -43,4 +43,4 @@ for release in reversed(list(repo.releases())):
             tar.extractall( "bin" )
             tar.close()
 
-            move("bin/premake5.exe", "bin/" + asset.name.replace(".zip", ".exe") )
+            move("bin/premake5", "bin/" + asset.name.replace(".zip", "") )
