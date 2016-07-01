@@ -8,6 +8,7 @@ python:
   - 3.5
 install:
     - chmod +x install-tests.sh
+    - chmod +x test.sh
 script:
     - ./install-tests.sh
     - python download-tests.py
