@@ -16,8 +16,7 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source venv/bin/activate  ; fi
 install:
     - chmod +x install-tests.sh
-    - chmod +x test.sh
 script:
     - ./install-tests.sh
     - python download-tests.py
-    - ./test.sh
+    - python test.py
