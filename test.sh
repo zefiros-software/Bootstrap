@@ -1,6 +1,6 @@
 #!/bin/bash
 
 for filename in bin/premake*; do    
-    echo $filename "test --file=test/tests.lua --systemscript=- --scripts=../"
-    "./"$filename " test --file=test/tests.lua --systemscript=- --scripts=../"
+    echo (readlink -f "./"$filename) " test --file=test/tests.lua --systemscript=- --scripts=../"
+    (readlink -f "./"$filename) " test --file=test/tests.lua --systemscript=- --scripts=../"
 done
