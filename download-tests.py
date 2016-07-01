@@ -1,6 +1,7 @@
 import github3
 import zipfile
 import platform
+import tarfile
 from shutil import move
 import os
 
