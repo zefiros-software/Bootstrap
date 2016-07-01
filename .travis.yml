@@ -11,4 +11,4 @@ install:
 script:
     - ./install-tests.sh
     - python download-tests.py
-    - test.sh
+    - ./test.sh
