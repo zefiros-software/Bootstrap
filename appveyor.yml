@@ -1,8 +1,10 @@
 platform:
   - Win32
 build: off
+environment:
+	 PYTHON: "C:/Python35"
 before_test:
     - cmd: ./install-tests.bat
-    - cmd: C:\\Python35 download-tests.py
+    - cmd: %PYTHON% download-tests.py
 test_script:
-    - cmd: C:\\Python35 test.py
+    - cmd: %PYTHON% test.py
