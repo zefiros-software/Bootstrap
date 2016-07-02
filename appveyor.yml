@@ -4,7 +4,7 @@ environment:
     PYTHON: "C:/Python35"
 build: off
 before_test:
-    - cmd: ./install-tests.bat
-    - cmd: %PYTHON% download-tests.py
+    - install-tests.bat
+    - %PYTHON% download-tests.py
 test_script:
-    - cmd: %PYTHON% test.py
+    - %PYTHON% test.py
