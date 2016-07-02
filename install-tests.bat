@@ -1,1 +1,1 @@
-pip install --pre github3.py
+%PYTHON%/Scripts/pip.exe install --pre github3.py
