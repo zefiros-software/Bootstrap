@@ -4,6 +4,7 @@ import platform
 import tarfile
 from shutil import move
 import os
+import sys
 
 if len( sys.argv ) > 0:
     repo = github3.login( token=sys.argv[0] ).repository( "premake", "premake-core" )
