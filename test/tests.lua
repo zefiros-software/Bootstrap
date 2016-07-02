@@ -97,13 +97,11 @@ TestBootstrap = {}
 	
     function TestBootstrap:testInit_CantMake()
 	
-		u.assertFalse( os.isdir( "modules<>test" ) ) 
-		
-		bootstrap.init( "modules<>test" )
+		u.assertFalse( os.isdir( "modules<'''>test" ) ) 
 
-        u.assertErrorMsgContains( "unable to create directory", bootstrap.init, "modules<>test" )
+        u.assertErrorMsgContains( "unable to create directory", bootstrap.init, "modules<'''>test" )
 				
-		u.assertFalse( os.isdir( "modules<>test" ) ) 
+		u.assertFalse( os.isdir( "modules<'''>test" ) ) 
     end
 	
     function TestBootstrap:testGetModule()
