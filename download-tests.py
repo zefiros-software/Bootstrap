@@ -6,8 +6,8 @@ from shutil import move
 import os
 import sys
 
-if len( sys.argv ) > 0:
-    repo = github3.login( token=sys.argv[0] ).repository( "premake", "premake-core" )
+if len( sys.argv ) > 1:
+    repo = github3.login( token=sys.argv[1] ).repository( "premake", "premake-core" )
 else:
     repo = github3.repository( "premake", "premake-core" )
 
