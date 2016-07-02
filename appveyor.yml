@@ -2,7 +2,7 @@ platform:
   - Win32
 build: off
 environment:
-	 PYTHON: "C:/Python35"
+	- PYTHON: "C:/Python35"
 before_test:
     - cmd: ./install-tests.bat
     - cmd: %PYTHON% download-tests.py
