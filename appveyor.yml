@@ -5,6 +5,6 @@ environment:
 build: off
 before_test:
     - install-tests.bat
-    - %PYTHON% download-tests.py
+    - "%PYTHON% download-tests.py"
 test_script:
-    - %PYTHON% test.py
+    - "%PYTHON% test.py"
