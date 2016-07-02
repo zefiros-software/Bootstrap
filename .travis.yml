@@ -18,5 +18,5 @@ install:
     - chmod +x install-tests.sh
 script:
     - ./install-tests.sh
-    - python download-tests.py "{$GH_TOKEN}"
+    - python download-tests.py $GH_TOKEN
     - python test.py
