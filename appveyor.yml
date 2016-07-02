@@ -1,7 +1,7 @@
 environment:
-    - PYTHON: "C:\\Python35"
+    PYTHON: "C:\\Python35"
 before_test:
     - ./install-tests.sh
-    - python download-tests.py
+    - %PYTHON% download-tests.py
 test_script:
-    - python test.py
+    - %PYTHON% test.py
