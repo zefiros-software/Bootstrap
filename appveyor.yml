@@ -7,6 +7,6 @@ install:
     - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
 before_test:
     - install-tests.bat
-    - "%PYTHON% download-tests.py"
+    - python download-tests.py
 test_script:
-    - "%PYTHON% test.py"
+    - python test.py
