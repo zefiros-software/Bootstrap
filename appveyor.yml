@@ -1,6 +1,6 @@
-os: Visual Studio 2015
 platform:
   - Win32
+build: off
 before_test:
     - cmd: ./install-tests.sh
     - cmd: C:\\Python35 download-tests.py
