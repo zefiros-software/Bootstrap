@@ -5,7 +5,10 @@ import tarfile
 from shutil import move
 import os
 
-repo = github3.repository( "premake", "premake-core")
+if len( sys.argv ) > 0:
+    repo = github3.login( token=sys.argv[0] ).repository( "premake", "premake-core" )
+else:
+    repo = github3.repository( "premake", "premake-core" )
 
 ignoreReleases = [ "Premake 5.0 alpha 4", "Premake 5.0 alpha 5" ]
 
