@@ -2,7 +2,7 @@ platform:
   - Win32
 build: off
 before_test:
-    - cmd: ./install-tests.sh
+    - cmd: ./install-tests.bat
     - cmd: C:\\Python35 download-tests.py
 test_script:
     - cmd: C:\\Python35 test.py
