@@ -195,6 +195,17 @@ function bootstrap.listModulesHead( vendor, mod )
         
     end
     
+    table.sort( result, function( t1, t2 ) 
+        
+        local p1 = t1:match( "(.*)/head/.*" )
+        local p2 = t2:match( "(.*)/head/.*" )
+        if p1 ~= p2 then
+            return p1 < p2
+        end
+        
+        return bootstrap.semver( t1.version ) > bootstrap.semver( t2.version )
+    end )
+    
     return result
 end
     
