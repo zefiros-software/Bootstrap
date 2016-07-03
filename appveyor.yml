@@ -6,7 +6,7 @@ build: off
 install:
     - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
 before_test:
-    - install-tests.bat
-    - python download-tests.py
+    - ./script/install-tests.bat
+    - python ./script/download-tests.py
 test_script:
-    - python test.py
+    - python ./script/test.py
