@@ -54,7 +54,7 @@ function bootstrap.onLoad()
         print( string.format( "Loading The Zefiros Bootstrap version '%s'...", bootstrap._VERSION ) )     
     end
 
-    bootstrap.init( bootstrap.globalDirectory )
+    --bootstrap.init( bootstrap.globalDirectory )
     
 end
 
