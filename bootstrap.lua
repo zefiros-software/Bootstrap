@@ -37,7 +37,8 @@ bootstrap.directories = { path.join( _MAIN_SCRIPT_DIR, "modules" ), bootstrap.gl
 bootstrap._dirModules = nil
 
 -- Quit on wrong premake verions
-require("premake", bootstrap.minReqVersion)
+-- trouble with alpha10 :(
+--require("premake", bootstrap.minReqVersion)
 
 -- Libs
 bootstrap.semver = dofile( "semver.lua" )
