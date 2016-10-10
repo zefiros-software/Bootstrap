@@ -230,7 +230,7 @@ function bootstrap.checkVersion( base, version, versions )
         local trimmed = bootstrap.fixVersion( v:gsub("^%s*(.-)%s*$", "%1") )
         
         -- trim version sstring
-        if trimmed == version or ( version ~= "@head" and trimmed ~= "@head" and base( version, trimmed )) then
+        if trimmed == version or ( version ~= "@head" and trimmed ~= "@head" and bootstrap.oldVersionCheck( version, trimmed )) then
             return true
         end
     
@@ -476,7 +476,7 @@ function bootstrap.oldVersionCheck( version, checks )
     end
 
     return true
-end)
+end
 
 function bootstrap.requireVersions( base, modName, versions )
 
@@ -486,12 +486,12 @@ function bootstrap.requireVersions( base, modName, versions )
     end
     
     local mod = nil
-    local result, modf = pcall( bootstrap.requireVersionsOld, bootstrap.oldVersionCheck, modName, versions )  
+    local result, modf = pcall( bootstrap.requireVersionsOld, base, modName, versions )  
     
     if not result then
         
         local modSplit = bootstrap.getModule( modName )
-        local resultn, modfn = pcall( bootstrap.requireVersionsNew, bootstrap.oldVersionCheck, modSplit, versions )  
+        local resultn, modfn = pcall( bootstrap.requireVersionsNew, base, modSplit, versions )  
 
         if not resultn then
         
