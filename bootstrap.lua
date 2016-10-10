@@ -430,6 +430,54 @@ function bootstrap.requireVersionsNew( base, modName, versionsStr )
     return mod
 end
 
+function bootstrap.oldVersionCheck( version, checks )
+    if not version then
+        return false
+    end
+
+    local function eq(a, b) return a == b end
+    local function le(a, b) return a <= b end
+    local function lt(a, b) return a < b  end
+    local function ge(a, b) return a >= b end
+    local function gt(a, b) return a > b  end
+    local function compat(a, b) return a ^ b  end
+
+    version = bootstrap.semver(version)
+    checks = string.explode(checks, " ", true)
+    for i = 1, #checks do
+        local check = checks[i]
+        local func
+        if check:startswith(">=") then
+            func = ge
+            check = check:sub(3)
+        elseif check:startswith(">") then
+            func = gt
+            check = check:sub(2)
+        elseif check:startswith("<=") then
+            func = le
+            check = check:sub(3)
+        elseif check:startswith("<") then
+            func = lt
+            check = check:sub(2)
+        elseif check:startswith("=") then
+            func = eq
+            check = check:sub(2)
+        elseif check:startswith("^") then
+            func = compat
+            check = check:sub(2)
+        else
+            func = ge
+        end
+
+        check = bootstrap.semver(check)
+        if not func(version, check) then
+            return false
+        end
+    end
+
+    return true
+end)
+
 function bootstrap.requireVersions( base, modName, versions )
 
     if versions == "@head" then
@@ -438,12 +486,12 @@ function bootstrap.requireVersions( base, modName, versions )
     end
     
     local mod = nil
-    local result, modf = pcall( bootstrap.requireVersionsOld, base, modName, versions )  
+    local result, modf = pcall( bootstrap.requireVersionsOld, bootstrap.oldVersionCheck, modName, versions )  
     
     if not result then
         
         local modSplit = bootstrap.getModule( modName )
-        local resultn, modfn = pcall( bootstrap.requireVersionsNew, base, modSplit, versions )  
+        local resultn, modfn = pcall( bootstrap.requireVersionsNew, bootstrap.oldVersionCheck, modSplit, versions )  
 
         if not resultn then
         
