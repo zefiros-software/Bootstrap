@@ -51,9 +51,9 @@ bootstrap.semver = dofile( "semver.lua" )
 -- ]]
 function bootstrap.onLoad()
     
-    if _ACTION ~= "test" then
-        print( string.format( "Loading The Zefiros Bootstrap version '%s'...", bootstrap._VERSION ) )     
-    end
+    --if _ACTION ~= "test" then
+        --print( string.format( "Loading The Zefiros Bootstrap version '%s'...", bootstrap._VERSION ) )     
+    --end
 
     --bootstrap.init( bootstrap.globalDirectory )
     
