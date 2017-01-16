@@ -14,9 +14,7 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install python3      ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then virtualenv venv -p python3; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source venv/bin/activate  ; fi
-install:
-    - chmod +x ./script/install-tests.sh
 script:
-    - ./script/install-tests.sh
+    - bash ./script/install-tests.sh
     - python ./script/download-tests.py $GH_TOKEN
     - python ./script/test.py
