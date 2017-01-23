@@ -440,7 +440,7 @@ function bootstrap.oldVersionCheck( version, checks )
     local function lt(a, b) return a < b  end
     local function ge(a, b) return a >= b end
     local function gt(a, b) return a > b  end
-    local function compat(a, b) return a ^ b  end
+    local function compat(a, b) return b ^ a end
 
     version = bootstrap.semver(version)
     checks = string.explode(checks, " ", true)
