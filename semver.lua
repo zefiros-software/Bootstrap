@@ -188,6 +188,9 @@ local function new(major, minor, patch, prerelease, build)
   if type(major) == 'string' then
     major,minor,patch,prerelease,build = parseVersion(major)
   end
+  hasMinor = minor ~= nil
+  hasPatch = patch ~= nil
+
   patch = patch or 0
   minor = minor or 0
 
@@ -195,7 +198,7 @@ local function new(major, minor, patch, prerelease, build)
   checkPositiveInteger(minor, "minor")
   checkPositiveInteger(patch, "patch")
 
-  local result = {major=major, minor=minor, patch=patch, prerelease=prerelease, build=build}
+  local result = {major=major, minor=minor, patch=patch, prerelease=prerelease, build=build, hasMinor = hasMinor, hasPatch = hasPatch}
   return setmetatable(result, mt)
 end
 

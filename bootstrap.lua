@@ -441,9 +441,21 @@ function bootstrap.oldVersionCheck( version, checks )
     local function ge(a, b) return a >= b end
     local function gt(a, b) return a > b  end
     local function compat(a, b) return b ^ a end
+    local function patch(a, b) 
+        if a.hasMinor and a.hasPatch then
+            return bootstrap.semver(a.major, a.minor, a.patch, a.prerelease) <= b and
+                bootstrap.semver(a.major, a.minor + 1, 0) > b
+        elseif a.hasMinor then
+            return bootstrap.semver(a.major, a.minor, 0) <= b and
+                bootstrap.semver(a.major, a.minor + 1, 0) > b
+        else
+            return bootstrap.semver(a.major, 0, 0) <= b and
+                bootstrap.semver(a.major + 1, 0, 0) > b
+        end
+    end
 
     version = bootstrap.semver(version)
-    checks = string.explode(checks, " ", true)
+    checks = string.explode(checks:gsub( "||", " " ), " ", true)
     for i = 1, #checks do
         local check = checks[i]
         local func
@@ -463,6 +475,9 @@ function bootstrap.oldVersionCheck( version, checks )
             func = eq
             check = check:sub(2)
         elseif check:startswith("^") then
+            func = compat
+            check = check:sub(2)
+        elseif check:startswith("~") then
             func = compat
             check = check:sub(2)
         else
