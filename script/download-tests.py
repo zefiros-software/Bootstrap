@@ -11,7 +11,7 @@ if len( sys.argv ) > 1:
 else:
     repo = github3.repository( "premake", "premake-core" )
 
-ignoreReleases = [ "Premake 5.0 alpha 4", "Premake 5.0 alpha 5" ]
+ignoreReleases = [ "Premake 5.0 alpha 4", "Premake 5.0 alpha 5", "Premake 5.0 alpha 6" ]
 
 
 for release in reversed(list(repo.releases())):

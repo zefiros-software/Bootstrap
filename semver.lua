@@ -1,5 +1,5 @@
 local semver = {
-  _VERSION     = '1.2.0',
+  _VERSION     = '1.2.1',
   _DESCRIPTION = 'semver for Lua',
   _URL         = 'https://github.com/kikito/semver.lua',
   _LICENSE     = [[
@@ -172,8 +172,20 @@ end
 -- if a and b are versions, a ^ b means "b is backwards-compatible with a"
 -- in other words, "it's safe to upgrade from a to b"
 function mt:__pow(other)
-  return self.major == other.major and
-         self.minor <= other.minor
+  if self.major == 0 then
+    return self == other
+  end
+
+    if other.hasMinor and other.hasPatch then
+        return bootstrap.semver(other.major, other.minor, other.patch, other.prerelease) <= self and
+            bootstrap.semver(other.major + 1, 0, 0) > self
+    elseif other.hasMinor then
+        return semver(other.major, 0, 0) <= self and
+            semver(other.major + 1, 0, 0) > self
+    else
+        return semver(other.major, 0, 0) <= self and
+            semver(other.major + 1, 0, 0) > self
+    end
 end
 function mt:__tostring()
   local buffer = { ("%d.%d.%d"):format(self.major, self.minor, self.patch) }

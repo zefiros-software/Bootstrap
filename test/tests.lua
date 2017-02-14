@@ -64,24 +64,6 @@ TestBootstrap = {}
 		
     end
 	
-    function TestBootstrap:testOnLoad_CorrectInit()
-	
-		--local i = bootstrap.init
-		
-		--local dir = ""
-		
-		--#bootstrap.init = function( directory )
-		--	dir = directory
-		--end
-		
-		--bootstrap.onLoad()
-		
-	 	--u.assertEquals( dir, bootstrap.globalDirectory )
-		
-		--bootstrap.init = i
-		
-    end
-	
     function TestBootstrap:testInit()
 	
 		u.assertFalse( os.isdir( "modules-test" ) ) 
@@ -879,6 +861,49 @@ TestBootstrap = {}
 		u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "@head", "<=0.0.0  ||>1.0.0  ||@head" ) )
 		u.assertFalse( bootstrap.checkVersion( premake.checkVersion, "0.2.0", "<=0.0.0  ||>1.0.0  ||@head" ) )
 		u.assertFalse( bootstrap.checkVersion( premake.checkVersion, "@head", "<=0.0.0  ||>1.0.0  ||   >0.5.0" ) )
+	
+    end
+	
+    function TestBootstrap:testCheckVersion_Branch()
+
+		u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "@dev", "@dev" ) )
+		u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "@dev", "<=0.0.0  ||>1.0.0  ||@dev" ) )
+		u.assertFalse( bootstrap.checkVersion( premake.checkVersion, "0.2.0", "<=0.0.0  ||>1.0.0  ||@dev" ) )
+		u.assertFalse( bootstrap.checkVersion( premake.checkVersion, "@dev", "<=0.0.0  ||>1.0.0  ||   >0.5.0" ) )
+	
+    end
+	
+    function TestBootstrap:testCheckVersion_Wildcard()
+
+		u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "*", "<=0.0.0 || >0.4.0" ) )
+		u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "*", "<=0.0.0 || >0.5.0" ) )
+		u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "0.2.0", "<=0.0.0 || *" ) )
+		u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "*", "@head" ) )
+		u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "@head", ">0.5.0 *" ) )
+		u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "@head", ">0.5.0 || *" ) )
+	
+    end
+	
+    function TestBootstrap:testCheckVersion_Caret()
+
+		u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "1.2.3", "^1.2.3" ) )
+		u.assertFalse( bootstrap.checkVersion( premake.checkVersion, "1.2.2", "^1.2.3" ) )
+		u.assertFalse( bootstrap.checkVersion( premake.checkVersion, "2.0.0", "^1.2.3" ) )
+		u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "2.0.0", "^1.2.3 || 2.0.0" ) )
+		u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "1.2.4", "^1.2.3" ) )
+		u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "1.3.4", "^1.2.3" ) )
+	
+    end
+	
+    function TestBootstrap:testCheckVersion_Tilde()
+
+		u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "1.2.3", "~1.2.3" ) )
+		u.assertFalse( bootstrap.checkVersion( premake.checkVersion, "1.2.2", "~1.2.3" ) )
+		u.assertFalse( bootstrap.checkVersion( premake.checkVersion, "2.0.0", "~1.2.3" ) )
+		u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "2.0.0", "~1.2.3 || 2.0.0" ) )
+		u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "1.2.4", "~1.2.3" ) )
+		u.assertFalse( bootstrap.checkVersion( premake.checkVersion, "1.3.4", "~1.2.3" ) )
+		u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "1.2.5", "~1.2.3" ) )
 	
     end
 	

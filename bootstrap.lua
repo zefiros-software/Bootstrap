@@ -25,8 +25,8 @@
 
 -- Bootstrap
 bootstrap = {}
-bootstrap._VERSION = "1.0.4"
-bootstrap.minReqVersion = ">5.0.0-alpha5"
+bootstrap._VERSION = "1.1.0"
+bootstrap.minReqVersion = ">5.0.0-alpha7"
 bootstrap._LOADED = {}
 
     
@@ -230,7 +230,9 @@ function bootstrap.checkVersion( base, version, versions )
         local trimmed = bootstrap.fixVersion( v:gsub("^%s*(.-)%s*$", "%1") )
         
         -- trim version sstring
-        if trimmed == version or ( version ~= "@head" and trimmed ~= "@head" and bootstrap.oldVersionCheck( version, trimmed )) then
+        if trimmed == version or 
+           (table.contains(trimmed:explode(" "),"*") or version == "*") or
+           (not version:contains("@") and not trimmed:contains("@") and bootstrap.oldVersionCheck( version, trimmed ) ) then
             return true
         end
     
@@ -402,11 +404,7 @@ function bootstrap.requireVersionsNew( base, modName, versionsStr )
             
         end
     else
-        
-        --if _ACTION ~= "test" then
-            --print( string.format( "Module with vendor '%s' and name '%s' has no releases, switching to head!", modName[1], modName[2] ) )
-        --end
-        
+                
         local ok, modf, found = pcall( bootstrap.requireVersionHead, base, modName )
 
         if not ok and found then
@@ -440,17 +438,17 @@ function bootstrap.oldVersionCheck( version, checks )
     local function lt(a, b) return a < b  end
     local function ge(a, b) return a >= b end
     local function gt(a, b) return a > b  end
-    local function compat(a, b) return b ^ a end
+    local function compat(a, b) return a ^ b end
     local function patch(a, b) 
-        if a.hasMinor and a.hasPatch then
-            return bootstrap.semver(a.major, a.minor, a.patch, a.prerelease) <= b and
-                bootstrap.semver(a.major, a.minor + 1, 0) > b
-        elseif a.hasMinor then
-            return bootstrap.semver(a.major, a.minor, 0) <= b and
-                bootstrap.semver(a.major, a.minor + 1, 0) > b
+        if b.hasMinor and b.hasPatch then
+            return bootstrap.semver(b.major, b.minor, b.patch, b.prerelease) <= a and
+                bootstrap.semver(b.major, b.minor + 1, 0) > a
+        elseif b.hasMinor then
+            return bootstrap.semver(b.major, b.minor, 0) <= a and
+                bootstrap.semver(b.major, b.minor + 1, 0) > a
         else
-            return bootstrap.semver(a.major, 0, 0) <= b and
-                bootstrap.semver(a.major + 1, 0, 0) > b
+            return bootstrap.semver(b.major, 0, 0) <= a and
+                bootstrap.semver(b.major + 1, 0, 0) > a
         end
     end
 
@@ -459,6 +457,7 @@ function bootstrap.oldVersionCheck( version, checks )
     for i = 1, #checks do
         local check = checks[i]
         local func
+        
         if check:startswith(">=") then
             func = ge
             check = check:sub(3)
@@ -478,8 +477,11 @@ function bootstrap.oldVersionCheck( version, checks )
             func = compat
             check = check:sub(2)
         elseif check:startswith("~") then
-            func = compat
+            func = patch
             check = check:sub(2)
+        elseif check == "*" then
+            func = function() return true end
+            check = "0.0.0"
         else
             func = ge
         end
