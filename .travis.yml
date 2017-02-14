@@ -18,6 +18,5 @@ script:
     - bash ./script/install-tests.sh
     - python ./script/download-tests.py $GH_TOKEN
     - python ./script/test.py
-
 after_success:
-    -  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; bash <(curl -s https://codecov.io/bash) -f test/extern/luacov.stats.out; fi
+    -  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then bash <(curl -s https://codecov.io/bash) -f test/extern/luacov.stats.out; fi
