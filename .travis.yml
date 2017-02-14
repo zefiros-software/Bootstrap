@@ -7,7 +7,9 @@ matrix:
           dist: trusty
         # Use generic language for osx
         - os: osx
-          language: 3.5
+          language: python
+          python:
+            - 3.5
 script:
     - bash ./script/install-tests.sh
     - python ./script/download-tests.py $GH_TOKEN
