@@ -461,35 +461,36 @@ function bootstrap.oldVersionCheck( version, checks )
     for i = 1, #checks do
         local check = checks[i]
         local func
-        
-        if check:startswith(">=") then
-            func = ge
-            check = check:sub(3)
-        elseif check:startswith(">") then
-            func = gt
-            check = check:sub(2)
-        elseif check:startswith("<=") then
-            func = le
-            check = check:sub(3)
-        elseif check:startswith("<") then
-            func = lt
-            check = check:sub(2)
-        elseif check:startswith("=") then
-            func = eq
-            check = check:sub(2)
-        elseif check:startswith("^") then
-            func = compat
-            check = check:sub(2)
-        elseif check:startswith("~") then
-            func = patch
-            check = check:sub(2)
-        else
-            func = eq
-        end
-
-        check = bootstrap.semver(check)
-        if not func(version, check) then
-            return false
+        if check ~= "" then
+            
+            if check:startswith(">=") then
+                func = ge
+                check = check:sub(3)
+            elseif check:startswith(">") then
+                func = gt
+                check = check:sub(2)
+            elseif check:startswith("<=") then
+                func = le
+                check = check:sub(3)
+            elseif check:startswith("<") then
+                func = lt
+                check = check:sub(2)
+            elseif check:startswith("=") then
+                func = eq
+                check = check:sub(2)
+            elseif check:startswith("^") then
+                func = compat
+                check = check:sub(2)
+            elseif check:startswith("~") then
+                func = patch
+                check = check:sub(2)
+            else
+                func = eq
+            end
+            check = bootstrap.semver(check)
+            if not func(version, check) then
+                return false
+            end
         end
     end
 
