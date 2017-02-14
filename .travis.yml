@@ -14,14 +14,9 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install python3      ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then virtualenv venv -p python3; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source venv/bin/activate  ; fi
-  - pip install hererocks
-  - hererocks lua53 -l5.1 -rlatest 
-  - source lua53/bin/activate
-  - luarocks install luacov
 script:
     - bash ./script/install-tests.sh
     - python ./script/download-tests.py $GH_TOKEN
     - python ./script/test.py
 after_success:
-    - luacov test/extern/luacov.stats.out
-    -  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then bash <(curl -s https://codecov.io/bash) -s test/extern/ -s test/; fi
+    -  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then bash <(curl -s https://codecov.io/bash); fi

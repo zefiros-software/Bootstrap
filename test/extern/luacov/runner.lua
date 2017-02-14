@@ -92,7 +92,6 @@ function runner.save_stats()
          loaded[name] = file_data
       end
    end
-
    stats.save(runner.configuration.statsfile, loaded)
    runner.data = {}
 end
@@ -130,8 +129,7 @@ function runner.run_report(configuration)
    if configuration.reporter then
       reporter = reporter .. "." .. configuration.reporter
    end
-
-   require(reporter).report()
+   require("extern.luacov.reporter").report()
 end
 
 local on_exit_run_once = false
@@ -337,7 +335,7 @@ local function set_config(configuration)
       local path = runner.configuration[option]
 
       if not is_absolute(path) then
-         cur_dir = cur_dir or get_cur_dir()
+         cur_dir = _WORKING_DIR
          runner.configuration[option] = cur_dir .. path
       end
    end

@@ -25,7 +25,7 @@ return {
   savestepsize = 100,
 
   --- Run reporter on completion? Default: false.
-  runreport = false,
+  runreport = true,
 
   --- Delete stats file after reporting? Default: false.
   deletestats = false,

@@ -24,14 +24,14 @@
 
 -- Libraries
 local u = require "extern.luaunit"
-dofile "extern/luacov.lua"
+require "extern.luacov"
 
-require "bootstrap"
+require( "bootstrap" )
 
 -- Mocking
 
 -- Load environment
-dofile "action/test.lua"
+dofile( "action/test.lua" )
 
 TestBootstrap = {} 
 function TestBootstrap:testBootstrapExists()
