@@ -311,15 +311,17 @@ function bootstrap.requireVersionHead( base, modName )
 
     local oldPath = package.path
     local mod = {}
+
+    local vendor, name = modName[1] or "", modName[2] or ""
     
     -- very lame workaround
-    local modPath = string.format( "/%s/%s/head/", modName[1], modName[2] )
+    local modPath = string.format( "/%s/%s/head/", vendor, name )
 
     package.path = os.getcwd() .. "/?.lua;" ..
                    path.join( os.getcwd(), bootstrap._dirModules ) .. modPath .. "?.lua;" ..
                    package.path
                     
-    local heads = bootstrap.listModulesHead( modName[1], modName[2] )
+    local heads = bootstrap.listModulesHead( vendor, name )
     local found = #heads > 0
     if found then
     
@@ -339,7 +341,7 @@ function bootstrap.requireVersionHead( base, modName )
     else
     
         package.path = oldPath
-        error( string.format( "Module with vendor '%s' and name '%s' not found,\nplease run 'premake5 install-module %s/%s'!", modName[1], modName[2], modName[1], modName[2] ) )
+        error( string.format( "Module with vendor '%s' and name '%s' not found,\nplease run 'premake5 install-module %s/%s'!", vendor, name, vendor, name ) )
         
     end
     
@@ -399,23 +401,22 @@ function bootstrap.requireVersionsNew( base, modName, versionsStr )
             
             if not loaded then
                 package.path = oldPath
-                error( string.format( "Module with vendor '%s' and name '%s' has no releases satisfying version '%s'!", modName[1], modName[2], versionsStr ) )
+                print( string.format( "Module with vendor '%s' and name '%s' has no releases satisfying version '%s'!", modName[1], modName[2], versionsStr ) )
             end
             
         end
     else
-                
         local ok, modf, found = pcall( bootstrap.requireVersionHead, base, modName )
 
         if not ok and found then
             
             package.path = oldPath
-            error( string.format( "Module with vendor '%s' and name '%s' failed to load!\n%s", modName[1], modName[2], modf ) )
+            print( string.format( "Module with vendor '%s' and name '%s' failed to load!\n%s", modName[1], modName[2], modf ) )
         
         elseif not ok and not found then
         
             package.path = oldPath
-            error( modf )
+            print( modf )
  
         else
         
