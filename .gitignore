@@ -1,2 +1,3 @@
 bin/temp/*premake*
 bin/premake*.exe
+test/extern/luacov.stats.out
