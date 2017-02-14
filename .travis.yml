@@ -18,3 +18,6 @@ script:
     - bash ./script/install-tests.sh
     - python ./script/download-tests.py $GH_TOKEN
     - python ./script/test.py
+
+after_success:
+    - bash <(curl -s https://codecov.io/bash)
