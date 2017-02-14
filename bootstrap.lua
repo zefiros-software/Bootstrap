@@ -472,11 +472,8 @@ function bootstrap.oldVersionCheck( version, checks )
         elseif check:startswith("~") then
             func = patch
             check = check:sub(2)
-        elseif check == "*" then
-            func = function() return true end
-            check = "0.0.0"
         else
-            func = ge
+            func = eq
         end
 
         check = bootstrap.semver(check)

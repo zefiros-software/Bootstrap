@@ -823,15 +823,16 @@ end
 
 function TestBootstrap:testCheckVersion_Basic()
 
-    u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "0.5.0", ">0.4.0" ) )
+    u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "0.5.0", ">=0.4.0" ) )
     u.assertFalse( bootstrap.checkVersion( premake.checkVersion, "0.5.0", ">0.5.0" ) )
+    u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "0.5.0", "0.5.0" ) )
 
 end
 
 function TestBootstrap:testCheckVersion_Multiple()
     
-    u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "0.5.0", "<=0.0.0 || >0.4.0" ) )
-    u.assertFalse( bootstrap.checkVersion( premake.checkVersion, "0.5.0", "<=0.0.0 || >0.5.0" ) )
+    u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "0.5.0", "<0.0.0 || >0.4.0" ) )
+    u.assertFalse( bootstrap.checkVersion( premake.checkVersion, "0.5.0", "=0.0.0 || >0.5.0" ) )
 
 end
 
@@ -893,6 +894,8 @@ function TestBootstrap:testCheckVersion_Caret()
     u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "2.0.0", "^1.2.3 || 2.0.0" ) )
     u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "1.2.4", "^1.2.3" ) )
     u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "1.3.4", "^1.2.3" ) )
+    u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "1.3.4", "^1.2" ) )
+    u.assertTrue( bootstrap.checkVersion( premake.checkVersion, "1.3.4", "^1" ) )
 
 end
 
