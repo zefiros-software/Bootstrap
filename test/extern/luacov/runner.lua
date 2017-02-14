@@ -129,7 +129,7 @@ function runner.run_report(configuration)
    if configuration.reporter then
       reporter = reporter .. "." .. configuration.reporter
    end
-   require("extern.luacov.reporter").report()
+   require("test.extern.luacov.reporter").report()
 end
 
 local on_exit_run_once = false

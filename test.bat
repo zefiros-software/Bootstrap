@@ -1,3 +1,1 @@
-cd test
-zpm test --file=tests.lua --systemscript=- --scripts=./
-cd../
+zpm test --file=test/tests.lua --systemscript=- --scripts=./
