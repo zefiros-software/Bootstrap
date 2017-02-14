@@ -174,18 +174,9 @@ end
 function mt:__pow(other)
   if self.major == 0 then
     return self == other
-  end
-
-    if other.hasMinor and other.hasPatch then
-        return bootstrap.semver(other.major, other.minor, other.patch, other.prerelease) <= self and
-            bootstrap.semver(other.major + 1, 0, 0) > self
-    elseif other.hasMinor then
-        return semver(other.major, 0, 0) <= self and
-            semver(other.major + 1, 0, 0) > self
-    else
-        return semver(other.major, 0, 0) <= self and
-            semver(other.major + 1, 0, 0) > self
-    end
+  end 
+  return self.major == other.major and
+         self.minor <= other.minor
 end
 function mt:__tostring()
   local buffer = { ("%d.%d.%d"):format(self.major, self.minor, self.patch) }

@@ -431,7 +431,18 @@ function bootstrap.oldVersionCheck( version, checks )
     local function lt(a, b) return a < b  end
     local function ge(a, b) return a >= b end
     local function gt(a, b) return a > b  end
-    local function compat(a, b) return a ^ b end
+    local function compat(a, b) 
+        if b.hasMinor and b.hasPatch then
+            return bootstrap.semver(b.major, b.minor, b.patch, b.prerelease) <= a and
+                bootstrap.semver(b.major + 1, 0, 0) > a
+        elseif b.hasMinor then
+            return bootstrap.semver(b.major, 0, 0) <= a and
+                bootstrap.semver(b.major + 1, 0, 0) > a
+        else
+            return bootstrap.semver(b.major, 0, 0) <= a and
+                bootstrap.semver(b.major + 1, 0, 0) > a
+        end
+    end
     local function patch(a, b) 
         if b.hasMinor and b.hasPatch then
             return bootstrap.semver(b.major, b.minor, b.patch, b.prerelease) <= a and
