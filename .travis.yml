@@ -3,17 +3,11 @@ matrix:
     include:
         # Use the built in venv for linux builds
         - os: linux
-          sudo: required
           python: 3.5
           dist: trusty
         # Use generic language for osx
         - os: osx
-          language: generic
-before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update               ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install python3      ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then virtualenv venv -p python3; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source venv/bin/activate  ; fi
+          language: 3.5
 script:
     - bash ./script/install-tests.sh
     - python ./script/download-tests.py $GH_TOKEN
