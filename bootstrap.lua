@@ -41,7 +41,7 @@ bootstrap._dirModules = nil
 --require("premake", bootstrap.minReqVersion)
 
 -- Libs
-bootstrap.semver = dofile( "semver.lua" )
+bootstrap.semver = dofile "extern/semver.lua" 
 
 --[[
 -- The module loader, this should not be executed when running tests.
@@ -49,14 +49,7 @@ bootstrap.semver = dofile( "semver.lua" )
 -- @post
 -- * os.isdir( bootstrap._dirModules ) == true
 -- ]]
-function bootstrap.onLoad()
-    
-    --if _ACTION ~= "test" then
-        --print( string.format( "Loading The Zefiros Bootstrap version '%s'...", bootstrap._VERSION ) )     
-    --end
-
-    --bootstrap.init( bootstrap.globalDirectory )
-    
+function bootstrap.onLoad()    
 end
 
 -- [[
