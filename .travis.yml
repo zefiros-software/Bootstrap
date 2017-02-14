@@ -20,3 +20,4 @@ script:
     - python ./script/test.py
 after_success:
     -  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then bash <(curl -s https://codecov.io/bash) -s test/extern/ -s test/; fi
+    - cat test/extern/luacov.stats.out
