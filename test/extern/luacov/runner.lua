@@ -335,8 +335,7 @@ local function set_config(configuration)
       local path = runner.configuration[option]
 
       if not is_absolute(path) then
-         cur_dir = _WORKING_DIR
-         runner.configuration[option] = cur_dir .. path
+         runner.configuration[option] = path.join(cur_dir, path)
       end
    end
 

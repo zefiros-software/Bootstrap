@@ -19,4 +19,4 @@ script:
     - python ./script/download-tests.py $GH_TOKEN
     - python ./script/test.py
 after_success:
-    -  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then bash <(curl -s https://codecov.io/bash); fi
+    -  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then bash <(curl -s https://codecov.io/bash) ; fi
