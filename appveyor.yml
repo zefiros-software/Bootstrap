@@ -7,6 +7,6 @@ install:
     - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
 before_test:
     - ./script/install-tests.bat
-    - python ./script/download-tests.py
+    - python ./script/download-tests.py $GH_TOKEN
 test_script:
     - python ./script/test.py
