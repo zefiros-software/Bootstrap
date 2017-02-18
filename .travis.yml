@@ -7,12 +7,10 @@ matrix:
           dist: trusty
         # Use generic language for osx
         - os: osx
-          language: python
-          python:
-            - 3.5
+          language: generic
 script:
     - bash ./script/install-tests.sh
     - python ./script/download-tests.py $GH_TOKEN
     - python ./script/test.py
 after_success:
-    -  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then bash <(curl -s https://codecov.io/bash) ; fi
+    -  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then bash <(curl -s https://codecov.io/bash); fi
