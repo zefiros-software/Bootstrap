@@ -508,7 +508,7 @@ function bootstrap.requireVersions( base, modName, versions )
     if versions == "@head" then
         local modSplit = bootstrap.getModule( modName )
         local mod = bootstrap.requireVersionHead( base, modSplit )   
-        if found == false then
+        if mod == true then
             return bootstrap.requireVersionHead( base, modSplit )
         end
     end
