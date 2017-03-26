@@ -332,7 +332,7 @@ function bootstrap.requireVersionHead( base, modName )
     else
     
         package.path = oldPath
-        boostrap.moduleNotFound(modName)        
+        bootstrap.moduleNotFound(modName)        
     end
     
     package.path = oldPath
