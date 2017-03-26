@@ -340,7 +340,7 @@ function bootstrap.requireVersionHead( base, modName )
     return mod, found
 end
 
-function boostrap.moduleNotFound(modName)
+function bootstrap.moduleNotFound(modName)
 
     error( string.format( "Module with vendor '%s' and name '%s' not found,\nplease run 'premake5 install-module %s/%s'!", modName[1], modName[2], modName[1], modName[2] ) )
 end
