@@ -22,7 +22,6 @@
 -- @endcond
 --]]
 
-
 -- Bootstrap
 bootstrap = {}
 bootstrap._VERSION = "1.1.0"
@@ -332,7 +331,7 @@ function bootstrap.requireVersionHead( base, modName )
     else
     
         package.path = oldPath
-        bootstrap.moduleNotFound(modName)        
+        return bootstrap.moduleNotFound(modName)        
     end
     
     package.path = oldPath
@@ -343,6 +342,8 @@ end
 function bootstrap.moduleNotFound(modName)
 
     error( string.format( "Module with vendor '%s' and name '%s' not found,\nplease run 'premake5 install-module %s/%s'!", modName[1], modName[2], modName[1], modName[2] ) )
+
+    return false
 end
 
 -- [[
@@ -357,7 +358,7 @@ end
 -- @returns
 -- The loaded module object.
 -- ]]
-function bootstrap.requireVersionsNew( base, modName, versionsStr )
+function bootstrap.requireVersionsNew( base, modName, versionsStr, noRetry )
     
     local oldPath = package.path
                 
@@ -403,17 +404,18 @@ function bootstrap.requireVersionsNew( base, modName, versionsStr )
     else
                 
         local ok, modf, found = pcall( bootstrap.requireVersionHead, base, modName )
-
         if not ok and found then
             
             package.path = oldPath
             error( string.format( "Module with vendor '%s' and name '%s' failed to load!\n%s", modName[1], modName[2], modf ) )
+ 
+        elseif ok and not modf and not noRetry then
+            return bootstrap.requireVersionsNew( base, modName, versionsStr, true ) 
         
         elseif not ok and not found then
         
             package.path = oldPath
             error( modf )
- 
         else
         
             mod = modf
@@ -505,7 +507,10 @@ function bootstrap.requireVersions( base, modName, versions )
 
     if versions == "@head" then
         local modSplit = bootstrap.getModule( modName )
-        return bootstrap.requireVersionHead( base, modSplit )   
+        local mod = bootstrap.requireVersionHead( base, modSplit )   
+        if found == false then
+            return bootstrap.requireVersionHead( base, modSplit )
+        end
     end
     
     local mod = nil
