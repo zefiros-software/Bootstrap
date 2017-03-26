@@ -332,13 +332,17 @@ function bootstrap.requireVersionHead( base, modName )
     else
     
         package.path = oldPath
-        error( string.format( "Module with vendor '%s' and name '%s' not found,\nplease run 'premake5 install-module %s/%s'!", modName[1], modName[2], modName[1], modName[2] ) )
-        
+        boostrap.moduleNotFound(modName)        
     end
     
     package.path = oldPath
     
     return mod, found
+end
+
+function boostrap.moduleNotFound(modName)
+
+    error( string.format( "Module with vendor '%s' and name '%s' not found,\nplease run 'premake5 install-module %s/%s'!", modName[1], modName[2], modName[1], modName[2] ) )
 end
 
 -- [[
