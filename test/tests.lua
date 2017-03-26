@@ -2446,7 +2446,7 @@ function TestBootstrap:testRequireVersions_Head()
     
     -- test
     u.assertEquals( mo, "testRequireVersions_Head" )
-    u.assertTrue( found )
+    u.assertIsNil( found )
     
     os.rmdir( bootstrap._dirModules )
     
