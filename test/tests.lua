@@ -65,31 +65,6 @@ function TestBootstrap:testDirectories()
     
 end
 
-function TestBootstrap:testInit()
-
-    u.assertFalse( os.isdir( "modules-test" ) ) 
-    
-    bootstrap.init( "modules-test" )
-    
-    u.assertTrue( os.isdir( "modules-test" ) ) 
-    
-    os.rmdir( "modules-test" )
-    
-    u.assertFalse( os.isdir( "modules-test" ) ) 
-end
-
-function TestBootstrap:testInit_CantMake()
-
-    -- linux and osx are more lenient
-    if os.get() == "Windows" then
-        u.assertFalse( os.isdir( "modules<'''>test" ) ) 
-
-        u.assertErrorMsgContains( "unable to create directory", bootstrap.init, "modules<'''>test" )
-                
-        u.assertFalse( os.isdir( "modules<'''>test" ) ) 
-    end
-end
-
 function TestBootstrap:testGetModule()
 
     u.assertItemsEquals( bootstrap.getModule( "Zefiros-Software/zpm" ), { "Zefiros-Software", "zpm" } ) 

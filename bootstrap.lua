@@ -52,26 +52,6 @@ function bootstrap.onLoad()
 end
 
 -- [[
--- Initialises the bootstrap loader by creating the correct directories
--- needed to function correctly
--- 
--- @post
--- * os.isdir( directory ) == true
--- ]]
-function bootstrap.init( directory )
-
-    if not os.isdir( directory ) then    
-
-        if _ACTION ~= "test" then
-            print( "Creating modules directory..." )            
-        end
-    
-        assert( os.mkdir( directory ) )        
-    end
-
-end
-
--- [[
 -- Seperates the vendor and module name from the module string.
 --
 -- @pre 
@@ -220,14 +200,16 @@ function bootstrap.checkVersion( base, version, versions )
     for _, v in ipairs( string.explode( versions, "||" ) ) do
     
         local trimmed = bootstrap.fixVersion( v:gsub("^%s*(.-)%s*$", "%1") )
-        
         -- trim version sstring
-        if trimmed == version or 
-           (table.contains(trimmed:explode(" "),"*") or version == "*") or
-           (not version:contains("@") and not trimmed:contains("@") and bootstrap.oldVersionCheck( version, trimmed ) ) then
+        if trimmed:gsub("(@)(.*)", "%2"):lower() == version:gsub("(@)(.*)", "%2"):lower() or 
+           (table.contains(trimmed:explode(" "),"*") or version == "*") then
             return true
         end
-    
+        
+        local ok, check = pcall(bootstrap.oldVersionCheck, version, trimmed)
+        if ok and not version:contains("@") and not trimmed:contains("@") and check then
+            return true
+        end
     end
 
     return false
@@ -590,11 +572,12 @@ function bootstrap.require(  base, modName, versions )
 
 end
 
+
+premake.override( premake, "checkVersion", bootstrap.checkVersion )
+
 if _ACTION ~= "test" then
 
     premake.override( _G, "require", bootstrap.require )
-
-    premake.override( premake, "checkVersion", bootstrap.checkVersion )
 
     bootstrap.onLoad()
     
