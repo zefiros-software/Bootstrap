@@ -575,6 +575,13 @@ end
 
 premake.override( premake, "checkVersion", bootstrap.checkVersion )
 
+-- we do not want the premake module downloader please
+-- our own stuff works better :)
+premake.override(premake, "downloadModule", function(base)
+
+    return false
+end )
+
 if _ACTION ~= "test" then
 
     premake.override( _G, "require", bootstrap.require )

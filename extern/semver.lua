@@ -54,7 +54,7 @@ local function parsePrereleaseAndBuildWithSign(str)
     prereleaseWithSign = str:match("^(-.+)$")
     buildWithSign      = str:match("^(+.+)$")
   end
-  assert(prereleaseWithSign or buildWithSign, ("The parameter %q must begin with + or - to denote a prerelease or a build"):format(str))
+  --assert(prereleaseWithSign or buildWithSign, ("The parameter %q must begin with + or - to denote a prerelease or a build"):format(str))
   return prereleaseWithSign, buildWithSign
 end
 
