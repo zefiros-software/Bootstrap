@@ -197,9 +197,12 @@ local function new(major, minor, patch, prerelease, build)
   patch = patch or 0
   minor = minor or 0
 
-  checkPositiveInteger(major, "major")
-  checkPositiveInteger(minor, "minor")
-  checkPositiveInteger(patch, "patch")
+  assert(math.floor(major) == major and major >= 0, 'major must be an integer and positive')
+  assert(math.floor(minor) == minor and minor >= 0, 'major must be an integer and positive')
+  assert(math.floor(patch) == patch and patch >= 0, 'major must be an integer and positive')
+  --checkPositiveInteger(major, "major")
+  --checkPositiveInteger(minor, "minor")
+  --checkPositiveInteger(patch, "patch")
 
   local result = {major=major, minor=minor, patch=patch, prerelease=prerelease, build=build, hasMinor = hasMinor, hasPatch = hasPatch}
   return setmetatable(result, mt)
