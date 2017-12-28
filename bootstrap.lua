@@ -298,7 +298,6 @@ function bootstrap.requireVersionHead( base, modName )
     if found then
     
         local result, modf = pcall( base, heads[1] )
-        
         if not result then
         
             -- restore in case
@@ -487,10 +486,10 @@ end
 
 function bootstrap.requireVersions( base, modName, versions )
 
-    if versions == "@head" then
+    if versions == "@head" or versions == "HEAD" then
         local modSplit = bootstrap.getModule( modName )
         local mod = bootstrap.requireVersionHead( base, modSplit )   
-        if mod == true then
+        if mod then
             return bootstrap.requireVersionHead( base, modSplit )
         end
     end
