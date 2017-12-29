@@ -297,7 +297,9 @@ function bootstrap.requireVersionHead( base, modName )
     local found = #heads > 0
     if found then
     
+        print(table.tostring(heads[1]), table.tostring(heads))
         local result, modf = pcall( base, heads[1] )
+        print(table.tostring(result))
         if not result then
         
             -- restore in case
@@ -561,7 +563,7 @@ function bootstrap.require(  base, modName, versions )
     if type(mod) == "table" and mod.onLoad ~= nil then
     
         if mod.__isLoaded == nil then
-            mod.onLoad()
+            bootstrap.loadModule(mod) 
         end
         
         mod.__isLoaded = true
@@ -569,6 +571,11 @@ function bootstrap.require(  base, modName, versions )
         
     return mod
 
+end
+
+function bootstrap.loadModule(mod) 
+
+    mod.onLoad()
 end
 
 
