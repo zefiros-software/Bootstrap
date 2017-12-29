@@ -297,9 +297,7 @@ function bootstrap.requireVersionHead( base, modName )
     local found = #heads > 0
     if found then
     
-        print(table.tostring(heads[1]), table.tostring(heads))
         local result, modf = pcall( base, heads[1] )
-        print(table.tostring(result))
         if not result then
         
             -- restore in case
