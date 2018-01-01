@@ -295,7 +295,6 @@ function bootstrap.requireVersionHead( base, modName )
                     
     local heads = bootstrap.listModulesHead( modName[1], modName[2] )
     local found = #heads > 0
-    print(debug.traceback(), table.tostring(heads), found, "@@")
     if found then
     
         local result, modf = pcall( base, heads[1] )
