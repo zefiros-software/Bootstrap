@@ -295,11 +295,11 @@ function bootstrap.requireVersionHead( base, modName )
                     
     local heads = bootstrap.listModulesHead( modName[1], modName[2] )
     local found = #heads > 0
+    print(debug.traceback(), table.tostring(heads), found, "@@")
     if found then
     
         local result, modf = pcall( base, heads[1] )
         if not result then
-        
             -- restore in case
             package.path = oldPath
             
@@ -310,7 +310,6 @@ function bootstrap.requireVersionHead( base, modName )
         end
         
     else
-    
         package.path = oldPath
         return bootstrap.moduleNotFound(modName)        
     end
@@ -488,9 +487,9 @@ function bootstrap.requireVersions( base, modName, versions )
 
     if versions == "@head" or versions == "HEAD" then
         local modSplit = bootstrap.getModule( modName )
-        local mod = bootstrap.requireVersionHead( base, modSplit )   
+        local mod = bootstrap.requireVersionHead( base, modSplit )
         if mod then
-            return bootstrap.requireVersionHead( base, modSplit )
+            return mod
         end
     end
     
@@ -525,8 +524,7 @@ function bootstrap.requireVersionsFromDirectories( base, modName, versions )
     
         bootstrap._dirModules = dir
         
-        local ok, modfn = pcall( bootstrap.requireVersions, base, modName, versions )  
-        
+        local ok, modfn = pcall( bootstrap.requireVersions, base, modName, versions )
         if ok then
             
             -- reset current path
@@ -538,7 +536,8 @@ function bootstrap.requireVersionsFromDirectories( base, modName, versions )
             if err == "" or ( err:gsub( "loop or previous error loading module", "" ) == err and 
                               err:gsub("%W", ""):gsub( modfn:gsub("%W", ""), "" ) == err:gsub("%W", "")) then
                 err = err .. "\n\n" .. modfn
-            end
+            end 
+            break
         end
     end
     
