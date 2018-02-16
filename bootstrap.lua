@@ -199,9 +199,9 @@ function bootstrap.checkVersion( base, version, versions )
     
     for _, v in ipairs( string.explode( versions, "||" ) ) do
     
-        local trimmed = bootstrap.fixVersion( v:gsub("^%s*(%.-)%s*$", "%1") )
+        local trimmed = bootstrap.fixVersion( v:gsub("^%s*(.-)%s*$", "%1") )
         -- trim version sstring
-        if trimmed:gsub("(@)(.*)", "%2"):lower() == version:gsub("(@)(.*)", "%2"):lower() or 
+        if (trimmed:gsub("@(.*)%s*", "%1"):lower() == version:gsub("@(.*)%s*", "%1"):lower()) or 
            (table.contains(trimmed:explode(" "),"*") or version == "*") then
             return true
         end
@@ -211,7 +211,6 @@ function bootstrap.checkVersion( base, version, versions )
             return true
         end
     end
-
     return false
     
 end
